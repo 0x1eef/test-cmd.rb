@@ -14,13 +14,19 @@ module Test::Cmd
     #  Returns the contents of stderr
     attr_reader :stderr
 
+    ## @return [Process::Status]
+    #  Returns the status of a process
+    attr_reader :status
+
     ##
     # @param [Tempfile] stdout
     # @param [Tempfile] stderr
+    # @param [Process::Status] pstatus
     # @return [Test::Cmd::Result]
-    def initialize(stdout, stderr)
+    def initialize(stdout, stderr, pstatus)
       @stdout = stdout.tap(&:rewind).read
       @stderr = stderr.tap(&:rewind).read
+      @status = pstatus
     end
   end
 
@@ -34,7 +40,7 @@ module Test::Cmd
     out = Tempfile.new("cmd-stdout").tap(&:unlink)
     err = Tempfile.new("cmd-stderr").tap(&:unlink)
     Process.wait spawn(cmd, {err:, out:})
-    Result.new(out, err)
+    Result.new(out, err, $?)
   ensure
     out.close
     err.close
