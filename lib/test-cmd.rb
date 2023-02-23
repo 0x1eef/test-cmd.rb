@@ -1,6 +1,13 @@
 module Test
 end unless defined?(Test)
 
+##
+# test-cmd.rb is a library for accessing the output streams
+# (both stdout and stderr) of a spawned process. The library was
+# first realized in a test environment, where it provided a path
+# for verifying that when code examples are run they produce the
+# expected output. The library can be generally useful outside a
+# test environment, too.
 module Test::Cmd
   class Result
     require "tempfile"
