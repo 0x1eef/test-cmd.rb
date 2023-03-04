@@ -42,6 +42,46 @@ class CmdTest < Test::Unit::TestCase
 end
 ```
 
+### IO#sync
+
+Sometimes it can be neccessary to bypass Ruby's internal buffer and flush
+output to the operating system immediately, otherwise there can be unexpected
+results. Consider the following example, where the output will be
+`bar\nfoo\n` rather than `foo\nbar\n`:
+
+``` ruby
+##
+# test.rb
+pid = fork do
+  sleep(1)
+  puts "bar"
+end
+puts "foo"
+Process.wait(pid)
+
+##
+# cmd.rb
+p cmd("ruby test.rb").stdout # => "bar\nfoo\n"
+```
+
+And with output flushed to the operating system immediately:
+
+``` ruby
+##
+# test.rb
+$stdout.sync = true
+pid = fork do
+  sleep(1)
+  puts "bar"
+end
+puts "foo"
+Process.wait(pid)
+
+##
+# cmd.rb
+p cmd("ruby test.rb").stdout # => "foo\nbar\n"
+```
+
 ## Sources
 
 * [Source code (GitHub)](https://github.com/0x1eef/test-cmd.rb#readme)
