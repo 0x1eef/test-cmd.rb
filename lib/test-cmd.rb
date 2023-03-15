@@ -35,6 +35,13 @@ module Test::Cmd
       @stderr = stderr.tap(&:rewind).read
       @status = pstatus
     end
+
+    ##
+    # @return [Integer]
+    #  Returns the exit status of a process
+    def exit_status
+      @status.exitstatus
+    end
   end
 
   ##

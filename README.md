@@ -33,11 +33,11 @@ class CmdTest < Test::Unit::TestCase
   end
 
   def test_ruby_success_exit_status
-    assert_equal 0, cmd(%q(ruby -e 'exit 0')).status.exitstatus
+    assert_equal 0, cmd(%q(ruby -e 'exit 0')).exit_status
   end
 
   def test_ruby_failure_exit_status
-    assert_equal 1, cmd(%q(ruby -e 'exit 1')).status.exitstatus
+    assert_equal 1, cmd(%q(ruby -e 'exit 1')).exit_status
   end
 end
 ```
