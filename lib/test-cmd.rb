@@ -59,4 +59,5 @@ module Test::Cmd
     out.close
     err.close
   end
+  module_function :cmd
 end
