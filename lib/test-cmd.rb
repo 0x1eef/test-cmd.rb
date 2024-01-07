@@ -42,6 +42,19 @@ module Test::Cmd
     def exit_status
       @status.exitstatus
     end
+
+    ##
+    # Yields each line of stdout when the command
+    # was successful, or each line of stderr when
+    # the command was not successful.
+    #
+    # @return [Enumerator]
+    #  Returns an Enumerator when a block is not given.
+    def each_line
+      return enum_for(:each_line) unless block_given?
+      io = @status.success? ? @stdout : @stderr
+      io.each_line.each { yield(_1.chomp) }
+    end
   end
 
   ##

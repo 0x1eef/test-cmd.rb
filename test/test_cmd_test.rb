@@ -31,4 +31,19 @@ class CmdTest < Test::Unit::TestCase
     CODE
     assert_equal "foo\nbar\n", cmd(%Q(ruby -e '#{code}')).stdout
   end
+
+  def test_each_line_stdout
+    run = false
+    cmd(%q(ruby -e '$stdout.puts "FooBar"'))
+    .each_line do
+      run = true
+      assert_equal _1, "FooBar"
+    end
+    assert_equal true, run
+  end
+
+  def test_each_line_returns_enum
+    assert_instance_of Enumerator,
+                       cmd(%q(ruby -e '$stdout.puts "FooBar"')).each_line
+  end
 end
