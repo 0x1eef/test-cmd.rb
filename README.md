@@ -12,10 +12,14 @@ test environment, too.
 ### Test::Unit
 
 The following example demonstrates how tests might be written with
-test-unit from the standard library. The [`Test::Cmd`](#link) module
-implements a [`cmd`](#link) method that can be included into a
-testcase. The [`cmd`](#link) method takes the command to run as
-its first and only argument:
+test-unit from the standard library. The
+[`Test::Cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html)
+module implements a
+[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html#cmd-class_method)
+method that can be included into a
+testcase. The
+[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html#cmd-class_method)
+method takes the command to run as its first and only argument:
 
 ```ruby
 require "test/unit"
@@ -94,6 +98,17 @@ test-cmd.rb is distributed as a RubyGem through its git repositories. <br>
 and
 [GitLab](https://gitlab.com/0x1eef/test-cmd.rb)
 are available as sources.
+
+``` ruby
+# Gemfile
+gem "test-cmd.rb", github: "0x1eef/test-cmd.rb", tag: "v0.4.1"
+```
+
+**Rubygems.org**
+
+test-cmd.rb can also be installed via rubygems.org.
+
+    gem install test-cmd.rb
 
 ## License
 
