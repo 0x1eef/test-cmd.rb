@@ -43,6 +43,7 @@ end
 
 test-cmd.rb provides an API that is similar to Rust's
 [Command API](https://doc.rust-lang.org/std/process/struct.Command.html).
+<br>
 The
 [API reference](https://0x1eef.github.io/x/test-cmd.rb)
 covers it in more-depth:
