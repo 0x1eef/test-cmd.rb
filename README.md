@@ -50,11 +50,10 @@ covers it in more-depth:
 
 ``` ruby
 require "test/cmd"
-cmd("du")
-  .arg("-s")
-  .arg("-h")
-  .spawn
-  .stdout
+str = cmd("du")
+      .arg("-s").arg("-h")
+      .spawn.stdout
+puts str      
 ```
 
 ### IO#sync
