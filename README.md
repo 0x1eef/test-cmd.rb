@@ -13,21 +13,14 @@ test environment, too.
 
 The following example demonstrates how tests might be written with
 test-unit from the standard library. The
-[`Test::Cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html)
-module implements a
-[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html#cmd-class_method)
-method that can be included into a
-testcase. The
-[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html#cmd-class_method)
-method takes the command to run as its first and only argument:
+[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/CmdMixin.html#cmd-instance_method)
+method is given the name of a command, along with any arguments:
 
 ```ruby
 require "test/unit"
 require "test/cmd"
 
 class CmdTest < Test::Unit::TestCase
-  include Test::Cmd
-
   def test_ruby_stdout
     assert_equal "foo\n", cmd(%q(ruby -e '$stdout.puts "foo"')).stdout
   end
@@ -44,6 +37,23 @@ class CmdTest < Test::Unit::TestCase
     assert_equal 1, cmd(%q(ruby -e 'exit 1')).exit_status
   end
 end
+```
+
+### Builder pattern
+
+test-cmd.rb provides an API that is similar to Rust's
+[Command API](https://doc.rust-lang.org/std/process/struct.Command.html).
+The
+[API reference](https://0x1eef.github.io/x/test-cmd.rb)
+covers it in more-depth:
+
+``` ruby
+require "test/cmd"
+cmd("du")
+  .arg("-s")
+  .arg("-h")
+  .spawn
+  .stdout
 ```
 
 ### IO#sync
