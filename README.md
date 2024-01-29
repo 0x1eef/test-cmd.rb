@@ -39,7 +39,7 @@ class CmdTest < Test::Unit::TestCase
 end
 ```
 
-### Builder pattern
+### Builder
 
 test-cmd.rb provides an API that is similar to Rust's
 [Command API](https://doc.rust-lang.org/std/process/struct.Command.html).
