@@ -20,8 +20,8 @@ class Test::Cmd
   def initialize(cmd, args = [])
     @cmd = cmd
     @args = args.dup
-    @out = Tempfile.new("cmd-stdout").tap(&:unlink)
-    @err = Tempfile.new("cmd-stderr").tap(&:unlink)
+    @out = unlink!(Tempfile.new("cmd-stdout"))
+    @err = unlink!(Tempfile.new("cmd-stderr"))
     @status = nil
     @spawned = false
   end
@@ -104,6 +104,17 @@ class Test::Cmd
     spawn unless @spawned
     io = @status.success? ? @stdout : @stderr
     io.each_line.each { yield(_1.chomp) }
+  end
+
+  private
+
+  ##
+  # @api private
+  def unlink!(file)
+    file.tap do
+      File.chmod(0000, file.path)
+      file.unlink
+    end
   end
 end
 
