@@ -111,7 +111,7 @@ are available as sources.
 
 ``` ruby
 # Gemfile
-gem "test-cmd.rb", github: "0x1eef/test-cmd.rb", tag: "v0.5.1"
+gem "test-cmd.rb", github: "0x1eef/test-cmd.rb", tag: "v0.5.2"
 ```
 
 **Rubygems.org**
