@@ -118,7 +118,7 @@ class Test::Cmd
   end
 end
 
-module Test::CmdMixin
+module Test::Cmd::Mixin
   ##
   # @param [String] cmd
   #  A command to execute
@@ -132,5 +132,5 @@ module Test::CmdMixin
 end
 
 module Kernel
-  include Test::CmdMixin
+  include Test::Cmd::Mixin
 end
