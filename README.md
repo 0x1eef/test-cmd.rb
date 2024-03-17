@@ -1,11 +1,7 @@
 ## About
 
 test-cmd.rb is a library for accessing the output streams
-(both stdout and stderr) of a spawned process. The library was
-first realized in a test environment, where it provided a path
-for verifying that when code examples are run they produce the
-expected output. The library can be generally useful outside a
-test environment, too.
+(both stdout and stderr) of a spawned process.
 
 ## Examples
 
@@ -53,7 +49,7 @@ require "test/cmd"
 str = cmd("du")
       .arg("-s").arg("-h")
       .spawn.stdout
-puts str      
+puts str
 ```
 
 ### IO#sync
@@ -96,29 +92,23 @@ Process.wait(pid)
 p cmd("ruby test.rb").stdout # => "foo\nbar\n"
 ```
 
-## Sources
+## Documentation
 
-* [Source code (GitHub)](https://github.com/0x1eef/test-cmd.rb#readme)
-* [Source code (GitLab)](https://gitlab.com/0x1eef/test-cmd.rb#about)
+A complete API reference is available at 
+[0x1eef.github.io/x/test-cmd.rb](https://0x1eef.github.io/x/test-cmd.rb).
 
 ## Install
 
-test-cmd.rb is distributed as a RubyGem through its git repositories. <br>
-[GitHub](https://github.com/0x1eef/test-cmd.rb),
-and
-[GitLab](https://gitlab.com/0x1eef/test-cmd.rb)
-are available as sources.
-
-``` ruby
-# Gemfile
-gem "test-cmd.rb", github: "0x1eef/test-cmd.rb", tag: "v0.5.2"
-```
-
 **Rubygems.org**
 
-test-cmd.rb can also be installed via rubygems.org.
+test-cmd.rb can be installed via rubygems.org.
 
     gem install test-cmd.rb
+
+## Sources
+
+* [GitHub](https://github.com/0x1eef/test-cmd.rb#readme)
+* [GitLab](https://gitlab.com/0x1eef/test-cmd.rb#about)
 
 ## License
 
