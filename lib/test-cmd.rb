@@ -10,12 +10,12 @@ class Test::Cmd
   ##
   # @param [String] cmd
   #  A command to spawn.
-  # @param [Array<String>] args
-  #  An array of command-line arguments.
+  # @param [Array<String>] argv
+  #  A variable number of command-line arguments.
   # @return [Test::Cmd]
-  def initialize(cmd, args = [])
+  def initialize(cmd, *argv)
     @cmd = cmd
-    @args = args.dup
+    @argv = argv.dup
     @out = unlink!(Tempfile.new("cmd-stdout"))
     @err = unlink!(Tempfile.new("cmd-stderr"))
     @status = nil
@@ -28,17 +28,17 @@ class Test::Cmd
   # @return [Test::Cmd]
   def arg(arg)
     tap do
-      @args.push(arg)
+      @argv.push(arg)
     end
   end
 
   ##
-  # @param [Array<String, #to_s>] args
+  # @param [Array<String, #to_s>] argv
   #  One or more command-line arguments.
   # @return [Test::Cmd]
-  def args(*args)
+  def args(*argv)
     tap do
-      @args.concat(args)
+      @argv.concat(argv)
     end
   end
 
@@ -48,7 +48,7 @@ class Test::Cmd
   def spawn
     tap do
       @spawned = true
-      Process.wait Process.spawn(@cmd, *@args, {out: @out, err: @err})
+      Process.wait Process.spawn(@cmd, *@argv, {out: @out, err: @err})
       @status = $?
     end
   ensure
@@ -114,14 +114,10 @@ end
 
 module Test::Cmd::Mixin
   ##
-  # @param [String] cmd
-  #  A command to execute
-  # @param [Array<String>] args
-  #  An array of command-line arguments.
-  # @return [Test::Cmd]
-  #  Returns an instance of {Test::Cmd Test::Cmd}
-  def cmd(cmd, args = [])
-    Test::Cmd.new(cmd, args)
+  # @param (see Test::Cmd#initialize)
+  # @return (see Test::Cmd#initialize)
+  def cmd(cmd, *argv)
+    Test::Cmd.new(cmd, *argv)
   end
 end
 
