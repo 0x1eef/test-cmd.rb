@@ -75,7 +75,8 @@ class Test::Cmd
     @err.close unless @err.closed?
   end
 
-  ## @return [Process::Status]
+  ##
+  # @return [Process::Status]
   #  Returns the status of a process
   def status
     spawn unless @spawned
