@@ -46,10 +46,9 @@ covers it in more-depth:
 
 ``` ruby
 require "test/cmd"
-str = cmd("du")
-      .arg("-s").arg("-h")
-      .spawn.stdout
-puts str
+puts cmd("du")
+       .args("-s", "-h")
+       .stdout
 ```
 
 ### IO#sync
