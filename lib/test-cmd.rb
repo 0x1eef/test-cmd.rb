@@ -90,16 +90,14 @@ class Test::Cmd
   end
 
   ##
-  # Yields each line of stdout when the command
-  # was successful, or each line of stderr when
-  # the command was not successful.
+  # @param [Symbol] io
+  #  The output stream as a Symbol (:stdout, :stderr).
   # @return [Enumerator]
   #  Returns an Enumerator when a block is not given.
-  def each_line
-    return enum_for(:each_line) unless block_given?
+  def each_line(io = :stdout)
+    return enum_for(:each_line, io) unless block_given?
     spawn unless @spawned
-    io = @status.success? ? @stdout : @stderr
-    io.each_line.each { yield(_1.chomp) }
+    public_send(io).each_line { yield(_1) }
   end
 
   private
