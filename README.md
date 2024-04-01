@@ -1,7 +1,7 @@
 ## About
 
-test-cmd.rb is a library for accessing the output streams
-(both stdout and stderr) of a spawned process.
+test-cmd.rb provides an object-oriented interface for spawning 
+a process.
 
 ## Examples
 
@@ -10,7 +10,7 @@ test-cmd.rb is a library for accessing the output streams
 The following example demonstrates how tests might be written with
 test-unit from the standard library. The
 [`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/CmdMixin.html#cmd-instance_method)
-method is given the name of a command, along with any arguments:
+method takes the name or path of a command, alongside any arguments:
 
 ```ruby
 require "test/unit"
@@ -18,19 +18,19 @@ require "test/cmd"
 
 class CmdTest < Test::Unit::TestCase
   def test_ruby_stdout
-    assert_equal "foo\n", cmd(%q(ruby -e '$stdout.puts "foo"')).stdout
+    assert_equal "42\n", cmd("ruby", "-e", "puts 42").stdout
   end
 
   def test_ruby_stderr
-    assert_equal "bar\n", cmd(%q(ruby -e '$stderr.puts "bar"')).stderr
+    assert_equal "42\n", cmd("ruby", "-e", "warn 42").stderr
   end
 
   def test_ruby_success_exit_status
-    assert_equal 0, cmd(%q(ruby -e 'exit 0')).exit_status
+    assert_equal 0, cmd("ruby", "-e", "exit 0").exit_status
   end
 
   def test_ruby_failure_exit_status
-    assert_equal 1, cmd(%q(ruby -e 'exit 1')).exit_status
+    assert_equal 1, cmd("ruby", "-e", "exit 1").exit_status
   end
 end
 ```
@@ -70,7 +70,7 @@ Process.wait(pid)
 
 ##
 # cmd.rb
-p cmd("ruby test.rb").stdout # => "bar\nfoo\n"
+p cmd("ruby", "test.rb").stdout # => "bar\nfoo\n"
 ```
 
 And with output flushed to the operating system immediately:
@@ -88,7 +88,7 @@ Process.wait(pid)
 
 ##
 # cmd.rb
-p cmd("ruby test.rb").stdout # => "foo\nbar\n"
+p cmd("ruby", "test.rb").stdout # => "foo\nbar\n"
 ```
 
 ## Documentation
@@ -114,4 +114,3 @@ test-cmd.rb can be installed via rubygems.org.
 [BSD Zero Clause](https://choosealicense.com/licenses/0bsd/).
 <br>
 See [LICENSE](./LICENSE).
-

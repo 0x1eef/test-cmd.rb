@@ -10,8 +10,7 @@ Gem::Specification.new do |gem|
   gem.licenses = ["0BSD"]
   gem.files = `git ls-files`.split($/)
   gem.require_paths = ["lib"]
-  gem.summary = "test-cmd.rb provides access to the output streams " \
-                "(both stdout and stderr) of a spawned process."
+  gem.summary = "An object-oriented interface for spawning a process."
   gem.metadata = { "documentation_uri" => "https://0x1eef.github.io/x/test-cmd.rb/" }
   gem.description = gem.summary
   gem.add_development_dependency "test-unit", "~> 3.5.7"
