@@ -23,20 +23,10 @@ class Test::Cmd
   end
 
   ##
-  # @param [String, #to_s] arg
-  #  A command-line argument.
-  # @return [Test::Cmd]
-  def arg(arg)
-    tap do
-      @argv.push(arg)
-    end
-  end
-
-  ##
   # @param [Array<String, #to_s>] argv
   #  One or more command-line arguments.
   # @return [Test::Cmd]
-  def args(*argv)
+  def argv(*argv)
     tap do
       @argv.concat(argv)
     end

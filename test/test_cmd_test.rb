@@ -54,4 +54,10 @@ class CmdTest < Test::Unit::TestCase
     assert_instance_of Enumerator,
                        cmd("ruby", "-e", "puts 'FooBar'").each_line
   end
+
+  def test_cmd_with_argv
+    assert_equal "42\n", cmd("ruby")
+                           .argv("-e", "warn 42")
+                           .stderr
+  end
 end

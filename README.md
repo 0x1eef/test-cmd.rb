@@ -47,7 +47,7 @@ covers it in more-depth:
 ``` ruby
 require "test/cmd"
 puts cmd("du")
-       .args("-s", "-h")
+       .argv("-s", "-h")
        .stdout
 ```
 
