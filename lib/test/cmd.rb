@@ -89,7 +89,7 @@ class Test::Cmd
   #
   # @example
   #   cmd("ruby", "-e", "exit 0")
-  #     .success { print "Command exited successfully: #{_1.exit_status}", "\n" }
+  #     .success { print "Command [#{_1.pid}] exited successfully", "\n" }
   #     .failure { }
   #
   # @return [Test::Cmd]
@@ -106,7 +106,7 @@ class Test::Cmd
   # @example
   #   cmd("ruby", "-e", "exit 1")
   #     .success { }
-  #     .failure { print "Command exited unsuccessfully: #{_1.exit_status}", "\n" }
+  #     .failure { print "Command [#{_1.pid}] exited unsuccessfully", "\n" }
   #
   # @return [Test::Cmd]
   def failure
