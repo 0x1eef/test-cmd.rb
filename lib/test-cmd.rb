@@ -16,10 +16,13 @@ class Test::Cmd
   def initialize(cmd, *argv)
     @cmd = cmd
     @argv = argv.dup
-    @out = unlink!(Tempfile.new("cmd-stdout"))
-    @err = unlink!(Tempfile.new("cmd-stderr"))
     @status = nil
     @spawned = false
+    @out, @err = [%w[testcmd stdout], %w[testcmd stderr]].map {
+      file = Tempfile.new(_1)
+      File.chmod(0, file.path)
+      file.tap(&:unlink)
+    }
   end
 
   ##
@@ -78,17 +81,6 @@ class Test::Cmd
   #  Returns the exit status of a process
   def exit_status
     status.exitstatus
-  end
-
-  private
-
-  ##
-  # @api private
-  def unlink!(file)
-    file.tap do
-      File.chmod(0, file.path)
-      file.unlink
-    end
   end
 end
 
