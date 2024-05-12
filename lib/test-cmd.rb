@@ -30,49 +30,51 @@ class Test::Cmd
   #  Command-line arguments
   # @return [Test::Cmd]
   def argv(*argv)
-    tap do
-      @argv.concat(argv)
-    end
+    tap { @argv.concat(argv) }
   end
 
   ##
   # Spawns a command
   # @return [Test::Cmd]
   def spawn
+    return if @spawned
+
     tap do
       @spawned = true
       Process.wait Process.spawn(@cmd, *@argv, {out: @out, err: @err})
       @status = $?
     end
-  ensure
-    [stdout,stderr]
   end
 
   ##
   # @return [String]
   #  Returns the contents of stdout
   def stdout
-    spawn unless @spawned
-    @stdout ||= @out.tap(&:rewind).read
-  ensure
-    @out.close unless @out.closed?
+    @stdout ||= begin
+      spawn
+      @out.tap(&:rewind).read
+    ensure
+      @out.close unless @out.closed?
+    end
   end
 
   ##
   # @return [String]
   #  Returns the contents of stderr
   def stderr
-    spawn unless @spawned
-    @stderr ||= @err.tap(&:rewind).read
-  ensure
-    @err.close unless @err.closed?
+    @stderr ||= begin
+      spawn
+      @err.tap(&:rewind).read
+    ensure
+      @err.close unless @err.closed?
+    end
   end
 
   ##
   # @return [Process::Status]
   #  Returns the status of a process
   def status
-    spawn unless @spawned
+    spawn
     @status
   end
 
