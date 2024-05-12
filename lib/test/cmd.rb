@@ -17,7 +17,7 @@ class Test::Cmd
     @argv = argv.dup
     @status = nil
     @spawned = false
-    @out, @err = [%w[testcmd stdout], %w[testcmd stderr]].map {
+    @out_io, @err_io = [%w[testcmd stdout], %w[testcmd stderr]].map {
       file = Tempfile.new(_1)
       File.chmod(0, file.path)
       file.tap(&:unlink)
@@ -40,7 +40,7 @@ class Test::Cmd
 
     tap do
       @spawned = true
-      Process.spawn(@cmd, *@argv, {out: @out, err: @err})
+      Process.spawn(@cmd, *@argv, {out: out_io, err: err_io})
       Process.wait
       @status = $?
     end
@@ -52,7 +52,7 @@ class Test::Cmd
   def stdout
     @stdout ||= begin
       spawn
-      @out.tap(&:rewind).read.tap { @out.close }
+      out_io.tap(&:rewind).read.tap { out_io.close }
     end
   end
 
@@ -62,7 +62,7 @@ class Test::Cmd
   def stderr
     @stderr ||= begin
       spawn
-      @err.tap(&:rewind).read.tap { @err.close }
+      err_io.tap(&:rewind).read.tap { err_io.close }
     end
   end
 
@@ -80,4 +80,8 @@ class Test::Cmd
   def exit_status
     status.exitstatus
   end
+
+  private
+
+  attr_reader :out_io, :err_io
 end
