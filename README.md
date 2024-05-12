@@ -45,8 +45,8 @@ is passed an instance of
 ``` ruby
 require "test/cmd"
 cmd("ruby", "-e", "exit 0")
-  .success { |cmd| print "The command was successful", "\n" }
-  .failure { |cmd| print "The command was unsuccessful", "\n" }
+  .success { print "The command [#{_1.pid}] was successful", "\n" }
+  .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
 ```
 
 ### IO#sync

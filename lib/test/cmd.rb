@@ -72,6 +72,13 @@ class Test::Cmd
 
   ##
   # @return [Integer]
+  #  Returns the process ID of a spawned command
+  def pid
+    status.pid
+  end
+
+  ##
+  # @return [Integer]
   #  Returns the exit status of a process
   def exit_status
     status.exitstatus
