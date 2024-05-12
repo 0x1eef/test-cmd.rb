@@ -31,7 +31,7 @@ class Test::Cmd
   # Spawns a command
   # @return [Test::Cmd]
   def spawn
-    return if @spawned
+    return self if @spawned
 
     tap do
       @spawned = true
