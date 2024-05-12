@@ -47,8 +47,8 @@ covers it in more-depth:
 ``` ruby
 require "test/cmd"
 puts cmd("du")
-       .argv("-s", "-h")
-       .stdout
+     .argv("-s", "-h")
+     .stdout
 ```
 
 ### IO#sync
@@ -100,7 +100,7 @@ A complete API reference is available at
 
 **Rubygems.org**
 
-test-cmd.rb can be installed via rubygems.org.
+test-cmd.rb can be installed via rubygems.org:
 
     gem install test-cmd.rb
 
