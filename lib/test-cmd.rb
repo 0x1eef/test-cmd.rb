@@ -53,9 +53,7 @@ class Test::Cmd
   def stdout
     @stdout ||= begin
       spawn
-      @out.tap(&:rewind).read
-    ensure
-      @out.close unless @out.closed?
+      @out.tap(&:rewind).read.tap { @out.close }
     end
   end
 
@@ -65,9 +63,7 @@ class Test::Cmd
   def stderr
     @stderr ||= begin
       spawn
-      @err.tap(&:rewind).read
-    ensure
-      @err.close unless @err.closed?
+      @err.tap(&:rewind).read.tap { @err.close }
     end
   end
 
