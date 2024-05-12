@@ -41,7 +41,8 @@ class Test::Cmd
 
     tap do
       @spawned = true
-      Process.wait Process.spawn(@cmd, *@argv, {out: @out, err: @err})
+      Process.spawn(@cmd, *@argv, {out: @out, err: @err})
+      Process.wait
       @status = $?
     end
   end
