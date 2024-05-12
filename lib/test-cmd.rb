@@ -2,16 +2,16 @@ module Test
 end unless defined?(Test)
 
 ##
-# test-cmd.rb is a library for accessing the output streams
-# (both stdout and stderr) of a spawned process.
+# test-cmd.rb provides an object oriented interface
+# for spawning a command.
 class Test::Cmd
   require "tempfile"
 
   ##
   # @param [String] cmd
-  #  A command to spawn.
+  #  A command to spawn
   # @param [Array<String>] argv
-  #  A variable number of command-line arguments.
+  #  Zero or more command-line arguments
   # @return [Test::Cmd]
   def initialize(cmd, *argv)
     @cmd = cmd
@@ -24,7 +24,7 @@ class Test::Cmd
 
   ##
   # @param [Array<String, #to_s>] argv
-  #  One or more command-line arguments.
+  #  Command-line arguments
   # @return [Test::Cmd]
   def argv(*argv)
     tap do
@@ -33,7 +33,7 @@ class Test::Cmd
   end
 
   ##
-  # Spawns a command.
+  # Spawns a command
   # @return [Test::Cmd]
   def spawn
     tap do
@@ -47,7 +47,7 @@ class Test::Cmd
 
   ##
   # @return [String]
-  #  Returns the contents of stdout.
+  #  Returns the contents of stdout
   def stdout
     spawn unless @spawned
     @stdout ||= @out.tap(&:rewind).read
@@ -57,7 +57,7 @@ class Test::Cmd
 
   ##
   # @return [String]
-  #  Returns the contents of stderr.
+  #  Returns the contents of stderr
   def stderr
     spawn unless @spawned
     @stderr ||= @err.tap(&:rewind).read
@@ -82,9 +82,9 @@ class Test::Cmd
 
   ##
   # @param [Symbol] io
-  #  The output stream as a Symbol (:stdout, :stderr).
+  #  The output stream as a Symbol (:stdout, :stderr)
   # @return [Enumerator]
-  #  Returns an Enumerator when a block is not given.
+  #  Returns an Enumerator when a block is not given
   def each_line(io = :stdout)
     return enum_for(:each_line, io) unless block_given?
     spawn unless @spawned
@@ -103,15 +103,11 @@ class Test::Cmd
   end
 end
 
-module Test::Cmd::Mixin
+module Kernel
   ##
   # @param (see Test::Cmd#initialize)
   # @return (see Test::Cmd#initialize)
   def cmd(cmd, *argv)
     Test::Cmd.new(cmd, *argv)
   end
-end
-
-module Kernel
-  include Test::Cmd::Mixin
 end
