@@ -80,17 +80,6 @@ class Test::Cmd
     status.exitstatus
   end
 
-  ##
-  # @param [Symbol] io
-  #  The output stream as a Symbol (:stdout, :stderr)
-  # @return [Enumerator]
-  #  Returns an Enumerator when a block is not given
-  def each_line(io = :stdout)
-    return enum_for(:each_line, io) unless block_given?
-    spawn unless @spawned
-    public_send(io).each_line { yield(_1) }
-  end
-
   private
 
   ##

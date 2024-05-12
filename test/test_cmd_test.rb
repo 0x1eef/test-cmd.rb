@@ -30,31 +30,6 @@ class CmdTest < Test::Unit::TestCase
     assert_equal "foo\nbar\n", cmd("ruby", "-e", code).stdout
   end
 
-  def test_each_line_stdout
-    run = false
-    cmd("ruby", "-e", "puts 'FooBar'")
-    .each_line do
-      run = true
-      assert_equal "FooBar\n", _1
-    end
-    assert run
-  end
-
-  def test_each_line_stderr
-    run = false
-    cmd("ruby", "-e", "warn 'BarFoo'")
-    .each_line(:stderr) do
-      run = true
-      assert_equal "BarFoo\n", _1
-    end
-    assert run
-  end
-
-  def test_each_line_returns_enum
-    assert_instance_of Enumerator,
-                       cmd("ruby", "-e", "puts 'FooBar'").each_line
-  end
-
   def test_cmd_with_argv
     assert_equal "42\n", cmd("ruby")
                            .argv("-e", "warn 42")
