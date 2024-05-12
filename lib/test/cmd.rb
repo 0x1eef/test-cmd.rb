@@ -17,13 +17,6 @@ class Test::Cmd
     @argv = argv.dup
     @status = nil
     @spawned = false
-    @out_io, @err_io = [
-      %W[#{object_id} testcmd.out], %W[#{object_id} testcmd.err]
-    ].map {
-      file = Tempfile.new(_1)
-      File.chmod(0, file.path)
-      file.tap(&:unlink)
-    }
   end
 
   ##
@@ -42,7 +35,8 @@ class Test::Cmd
 
     tap do
       @spawned = true
-      Process.spawn(@cmd, *@argv, {out: out_io, err: err_io})
+      @out_io, @err_io = spawn_io
+      Process.spawn(@cmd, *@argv, {out: @out_io, err: @err_io})
       Process.wait
       @status = $?
     end
@@ -86,4 +80,15 @@ class Test::Cmd
   private
 
   attr_reader :out_io, :err_io
+
+  def spawn_io
+    [
+      %W[#{object_id} testcmd.out],
+      %W[#{object_id} testcmd.err]
+    ].map {
+      file = Tempfile.new(_1)
+      File.chmod(0, file.path)
+      file.tap(&:unlink)
+    }
+  end
 end
