@@ -5,6 +5,20 @@ a process.
 
 ## Examples
 
+### Callbacks
+
+The success and failure callbacks provide hooks for when
+a command exits successfully or unsuccessfully. The callback
+is passed an instance of
+[Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html):
+
+``` ruby
+require "test/cmd"
+cmd("ruby", "-e", "exit 0")
+  .success { print "The command [#{_1.pid}] was successful", "\n" }
+  .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
+```
+
 ### Test::Unit
 
 The following example demonstrates how tests might be written with
@@ -33,20 +47,6 @@ class CmdTest < Test::Unit::TestCase
     assert_equal 1, cmd("ruby", "-e", "exit 1").exit_status
   end
 end
-```
-
-### Callbacks
-
-The success and failure callbacks provide hooks for when
-a command exits successfully or unsuccessfully. The callback
-is passed an instance of
-[Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html):
-
-``` ruby
-require "test/cmd"
-cmd("ruby", "-e", "exit 0")
-  .success { print "The command [#{_1.pid}] was successful", "\n" }
-  .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
 ```
 
 ### IO#sync
