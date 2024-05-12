@@ -17,7 +17,9 @@ class Test::Cmd
     @argv = argv.dup
     @status = nil
     @spawned = false
-    @out_io, @err_io = [%w[testcmd stdout], %w[testcmd stderr]].map {
+    @out_io, @err_io = [
+      %W[#{object_id} testcmd.out], %W[#{object_id} testcmd.err]
+    ].map {
       file = Tempfile.new(_1)
       File.chmod(0, file.path)
       file.tap(&:unlink)
