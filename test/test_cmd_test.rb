@@ -42,12 +42,12 @@ class CmdTest < Test::Unit::TestCase
   def test_stdout_with_fork
     code = <<-CODE.each_line.map { _1.chomp.strip }.join(";")
       $stdout.sync = true
-      pid = fork do
+      fork do
         sleep(1)
         puts "bar"
       end
       puts "foo"
-      Process.wait(pid)
+      Process.wait
     CODE
     assert_equal "foo\nbar\n", cmd("ruby", "-e", code).stdout
   end

@@ -59,12 +59,12 @@ results. Consider the following example, where the output will be
 ``` ruby
 ##
 # test.rb
-pid = fork do
+fork do
   sleep(1)
   puts "bar"
 end
 puts "foo"
-Process.wait(pid)
+Process.wait
 
 ##
 # cmd.rb
@@ -77,12 +77,12 @@ And with output flushed to the operating system immediately:
 ##
 # test.rb
 $stdout.sync = true
-pid = fork do
+fork do
   sleep(1)
   puts "bar"
 end
 puts "foo"
-Process.wait(pid)
+Process.wait
 
 ##
 # cmd.rb
