@@ -22,15 +22,21 @@ class CmdTest < Test::Unit::TestCase
   end
 
   def test_ruby_success_callback
-    ok = false
-    cmd("ruby", "-e", "exit 0").success { ok = true }
-    assert_equal true, ok
+    call_ok, call_fail = [false, false]
+    cmd("ruby", "-e", "exit 0")
+      .success { call_ok = true }
+      .failure { call_fail = true }
+    assert_equal true, call_ok
+    assert_equal false, call_fail
   end
 
   def test_ruby_failure_callback
-    ok = false
-    cmd("ruby", "-e", "exit 1").failure { ok = true }
-    assert_equal true, ok
+    call_ok, call_fail = [false, false]
+    cmd("ruby", "-e", "exit 1")
+      .success { call_ok = true }
+      .failure { call_fail = true }
+    assert_equal true, call_fail
+    assert_equal false, call_ok
   end
 
   def test_stdout_with_fork
