@@ -1,6 +1,6 @@
 ## About
 
-test-cmd.rb provides an object-oriented interface for spawning 
+test-cmd.rb provides an object-oriented interface for spawning
 a process.
 
 ## Examples
@@ -35,20 +35,18 @@ class CmdTest < Test::Unit::TestCase
 end
 ```
 
-### Builder
+### Callbacks
 
-test-cmd.rb provides an API that is similar to Rust's
-[Command API](https://doc.rust-lang.org/std/process/struct.Command.html).
-<br>
-The
-[API reference](https://0x1eef.github.io/x/test-cmd.rb)
-covers it in more-depth:
+The success and failure callbacks provide hooks for when
+a command exits successfully or unsuccessfully. The callback
+is passed an instance of
+[Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html):
 
 ``` ruby
 require "test/cmd"
-puts cmd("du")
-     .argv("-s", "-h")
-     .stdout
+cmd("ruby", "-e", "exit 0")
+  .success { |cmd| print "The command was successful", "\n" }
+  .failure { |cmd| print "The command was unsuccessful", "\n" }
 ```
 
 ### IO#sync
@@ -93,7 +91,7 @@ p cmd("ruby", "test.rb").stdout # => "foo\nbar\n"
 
 ## Documentation
 
-A complete API reference is available at 
+A complete API reference is available at
 [0x1eef.github.io/x/test-cmd.rb](https://0x1eef.github.io/x/test-cmd.rb).
 
 ## Install

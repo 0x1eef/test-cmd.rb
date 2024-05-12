@@ -77,6 +77,38 @@ class Test::Cmd
     status.exitstatus
   end
 
+  ##
+  # Yields an instance of {Test::Cmd Test::Cmd}.
+  #
+  # @example
+  #   cmd("ruby", "-e", "exit 0")
+  #     .success { print "Command exited successfully: #{_1.exit_status}", "\n" }
+  #     .failure { }
+  #
+  # @return [Test::Cmd]
+  def success
+    tap do
+      spawn
+      status.success? ? yield(self) : nil
+    end
+  end
+
+  ##
+  # Yields an instance of {Test::Cmd Test::Cmd}.
+  #
+  # @example
+  #   cmd("ruby", "-e", "exit 1")
+  #     .success { }
+  #     .failure { print "Command exited unsuccessfully: #{_1.exit_status}", "\n" }
+  #
+  # @return [Test::Cmd]
+  def failure
+    tap do
+      spawn
+      status.success? ? nil : yield(self)
+    end
+  end
+
   private
 
   attr_reader :out_io, :err_io

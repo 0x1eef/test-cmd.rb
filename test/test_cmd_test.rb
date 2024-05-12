@@ -21,6 +21,18 @@ class CmdTest < Test::Unit::TestCase
     assert_equal true, cmd("ruby", "-e", "exit 0").status.success?
   end
 
+  def test_ruby_success_callback
+    ok = false
+    cmd("ruby", "-e", "exit 0").success { ok = true }
+    assert_equal true, ok
+  end
+
+  def test_ruby_failure_callback
+    ok = false
+    cmd("ruby", "-e", "exit 1").failure { ok = true }
+    assert_equal true, ok
+  end
+
   def test_stdout_with_fork
     code = <<-CODE.each_line.map { _1.chomp.strip }.join(";")
       $stdout.sync = true
