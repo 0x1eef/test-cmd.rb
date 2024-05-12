@@ -17,3 +17,7 @@ AllCops:
 Style/MultilineIfModifier:
   Exclude:
     - 'lib/test-cmd.rb'
+
+Layout/MultilineMethodCallIndentation:
+  Exclude:
+    - 'test/*.rb'
