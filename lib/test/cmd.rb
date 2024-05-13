@@ -85,6 +85,13 @@ class Test::Cmd
   end
 
   ##
+  # @return [Boolean]
+  #  Returns true when a command exited successfully
+  def success?
+    status.success?
+  end
+
+  ##
   # Yields an instance of {Test::Cmd Test::Cmd}.
   #
   # @example

@@ -19,6 +19,7 @@ class CmdTest < Test::Unit::TestCase
 
   def test_ruby_success_status
     assert_equal true, cmd("ruby", "-e", "exit 0").status.success?
+    assert_equal true, cmd("ruby", "-e", "exit 0").success?
   end
 
   def test_ruby_success_callback
