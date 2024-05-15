@@ -1,4 +1,5 @@
-require_relative "../test-cmd"
+module Test
+end unless defined?(Test)
 
 ##
 # test-cmd.rb provides an object oriented interface
@@ -136,5 +137,14 @@ class Test::Cmd
       File.chmod(0, file.path)
       file.tap(&:unlink)
     }
+  end
+end
+
+module Kernel
+  ##
+  # @param (see Test::Cmd#initialize)
+  # @return (see Test::Cmd#initialize)
+  def cmd(cmd, *argv)
+    Test::Cmd.new(cmd, *argv)
   end
 end
