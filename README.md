@@ -23,7 +23,7 @@ cmd("ruby", "-e", "exit 0")
 
 The following example demonstrates how tests might be written with
 test-unit from the standard library. The
-[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Test/CmdMixin.html#cmd-instance_method)
+[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Kernel.html#cmd-instance_method)
 method takes the name or path of a command, alongside any arguments:
 
 ```ruby
