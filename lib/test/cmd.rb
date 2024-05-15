@@ -131,8 +131,8 @@ class Test::Cmd
 
   def spawn_io
     [
-      [".testcmd.stdout.#{namespace}.", SecureRandom.alphanumeric(5)],
-      [".testcmd.stderr.#{namespace}.", SecureRandom.alphanumeric(5)]
+      [".testcmd.stdout.#{namespace}.", SecureRandom.alphanumeric(3)],
+      [".testcmd.stderr.#{namespace}.", SecureRandom.alphanumeric(3)]
     ].map {
       file = Tempfile.new(_1)
       File.chmod(0, file.path)
@@ -141,11 +141,7 @@ class Test::Cmd
   end
 
   def namespace
-    [
-      Process.pid,
-      Thread.current.object_id,
-      object_id
-    ].join(".")
+    [Process.pid, object_id].join(".")
   end
 end
 
