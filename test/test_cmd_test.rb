@@ -58,4 +58,10 @@ class CmdTest < Test::Unit::TestCase
                            .argv("-e", "warn 42")
                            .stderr
   end
+
+  def test_io_closed_after_spawn
+    result = cmd("ruby", "-e", "puts 42").spawn
+    assert_equal true, result.send(:out_io).closed?
+    assert_equal true, result.send(:err_io).closed?
+  end
 end

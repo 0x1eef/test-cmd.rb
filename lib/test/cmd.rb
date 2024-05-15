@@ -41,6 +41,8 @@ class Test::Cmd
       Process.spawn(@cmd, *@argv, {out: @out_io, err: @err_io})
       Process.wait
       @status = $?
+    ensure
+      [stdout, stderr]
     end
   end
 
@@ -51,6 +53,8 @@ class Test::Cmd
     @stdout ||= begin
       spawn
       out_io.tap(&:rewind).read.tap { out_io.close }
+    rescue IOError
+      @stdout
     end
   end
 
@@ -61,6 +65,8 @@ class Test::Cmd
     @stderr ||= begin
       spawn
       err_io.tap(&:rewind).read.tap { err_io.close }
+    rescue IOError
+      @stderr
     end
   end
 
