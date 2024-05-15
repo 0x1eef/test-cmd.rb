@@ -106,4 +106,16 @@ class Test::Cmd
       ruby("puts 42").spawn
     end
   end
+
+  ##
+  # Test::Cmd#spawned?
+  class SpawnedTest < Test
+    def test_spawned_before_spawn
+      assert_equal false, ruby("puts 42").spawned?
+    end
+
+    def test_spawned_after_spawn
+      assert_equal true, ruby("puts 42").tap(&:spawn).spawned?
+    end
+  end
 end

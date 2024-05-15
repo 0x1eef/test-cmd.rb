@@ -131,14 +131,21 @@ class Test::Cmd
     end
   end
 
+  ##
+  # @return [Boolean]
+  #  Returns true when a command has been spawned
+  def spawned?
+    @spawned
+  end
+
   private
 
   attr_reader :out_io, :err_io
 
   def spawn_io
     [
-      [".testcmd.stdout.#{namespace}.", SecureRandom.alphanumeric(3)],
-      [".testcmd.stderr.#{namespace}.", SecureRandom.alphanumeric(3)]
+      [".testcmd.stdout.#{ns}.", SecureRandom.alphanumeric(3)],
+      [".testcmd.stderr.#{ns}.", SecureRandom.alphanumeric(3)]
     ].map {
       file = Tempfile.new(_1)
       File.chmod(0, file.path)
@@ -146,7 +153,7 @@ class Test::Cmd
     }
   end
 
-  def namespace
+  def ns
     [Process.pid, object_id].join(".")
   end
 end
