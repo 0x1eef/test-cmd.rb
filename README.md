@@ -13,7 +13,7 @@ is passed an instance of
 [Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html):
 
 ``` ruby
-require "test/cmd"
+require "test-cmd"
 cmd("ruby", "-e", "exit 0")
   .success { print "The command [#{_1.pid}] was successful", "\n" }
   .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
@@ -32,19 +32,25 @@ require "test/cmd"
 
 class CmdTest < Test::Unit::TestCase
   def test_ruby_stdout
-    assert_equal "42\n", cmd("ruby", "-e", "puts 42").stdout
+    assert_equal "42\n", ruby("puts 42").stdout
   end
 
   def test_ruby_stderr
-    assert_equal "42\n", cmd("ruby", "-e", "warn 42").stderr
+    assert_equal "42\n", ruby("warn 42").stderr
   end
 
   def test_ruby_success_exit_status
-    assert_equal 0, cmd("ruby", "-e", "exit 0").exit_status
+    assert_equal 0, ruby("exit 0").exit_status
   end
 
   def test_ruby_failure_exit_status
-    assert_equal 1, cmd("ruby", "-e", "exit 1").exit_status
+    assert_equal 1, ruby("exit 1").exit_status
+  end
+
+  private
+
+  def ruby(code)
+    cmd("ruby", "-e", code)
   end
 end
 ```
