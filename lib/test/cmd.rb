@@ -6,6 +6,7 @@ end unless defined?(Test)
 # for spawning a command.
 class Test::Cmd
   require "tempfile"
+  require "securerandom"
 
   ##
   # @param [String] cmd
@@ -140,7 +141,12 @@ class Test::Cmd
   end
 
   def namespace
-    [Process.pid, Thread.current.object_id, object_id].join("_")
+    [
+      SecureRandom.alphanumeric,
+      Process.pid,
+      Thread.current.object_id,
+      object_id
+    ].join(".")
   end
 end
 
