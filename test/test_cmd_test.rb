@@ -2,6 +2,10 @@ require_relative "setup"
 
 class Test::Cmd
   class Test < Test::Unit::TestCase
+    private
+    def ruby(str)
+      cmd "ruby", "-e", str
+    end
   end
 end
 
@@ -20,16 +24,16 @@ class Test::Cmd
   # Test::Cmd#{exit_status, status, success?}
   class ExitStatusTest < Test
     def test_ruby_exit_status_success
-      assert_equal 0, cmd("ruby", "-e", "exit 0").exit_status
+      assert_equal 0, ruby("exit 0").exit_status
     end
 
     def test_ruby_exit_status_failure
-      assert_equal 1, cmd("ruby", "-e", "exit 1").exit_status
+      assert_equal 1, ruby("exit 1").exit_status
     end
 
     def test_ruby_exit_status_predicates
-      assert_equal true, cmd("ruby", "-e", "exit 0").status.success?
-      assert_equal true, cmd("ruby", "-e", "exit 0").success?
+      assert_equal true, ruby("exit 0").status.success?
+      assert_equal true, ruby("exit 0").success?
     end
   end
 
@@ -37,11 +41,11 @@ class Test::Cmd
   # Test::Cmd#{stdout,stderr}
   class OutputTest < Test
     def test_ruby_stdout
-      assert_equal "42\n", cmd("ruby", "-e", "puts 42").stdout
+      assert_equal "42\n", ruby("puts 42").stdout
     end
 
     def test_ruby_stderr
-      assert_equal "42\n", cmd("ruby", "-e", "warn 42").stderr
+      assert_equal "42\n", ruby("warn 42").stderr
     end
 
     def test_ruby_stdout_fork
@@ -54,7 +58,7 @@ class Test::Cmd
       puts "foo"
       Process.wait
     CODE
-      assert_equal "foo\nbar\n", cmd("ruby", "-e", code).stdout
+      assert_equal "foo\nbar\n", ruby(code).stdout
     end
   end
 
@@ -63,7 +67,7 @@ class Test::Cmd
   class CallbackTest < Test
     def test_ruby_success_callback
       call_ok, call_fail = [false, false]
-      cmd("ruby", "-e", "exit 0")
+      ruby("exit 0")
         .success { call_ok = true }
         .failure { call_fail = true }
       assert_equal true, call_ok
@@ -72,7 +76,7 @@ class Test::Cmd
 
     def test_ruby_failure_callback
       call_ok, call_fail = [false, false]
-      cmd("ruby", "-e", "exit 1")
+      ruby("exit 1")
         .success { call_ok = true }
         .failure { call_fail = true }
       assert_equal true, call_fail
@@ -85,21 +89,21 @@ class Test::Cmd
   class SpawnTest < Test
     def test_io_closed_after_spawn
       %i[out_io err_io].each do |io|
-        assert_equal true, command.send(io).closed?
+        assert_equal true, spawned_command.send(io).closed?
       end
     end
 
     def test_io_unlink_after_spawn
       %i[out_io err_io].each do |io|
-        path = command.send(io).__getobj__.path
+        path = spawned_command.send(io).__getobj__.path
         assert_equal false, File.exist?(path)
       end
     end
 
     private
 
-    def command
-      cmd("ruby", "-e", "puts 42").spawn
+    def spawned_command
+      ruby("puts 42").spawn
     end
   end
 end
