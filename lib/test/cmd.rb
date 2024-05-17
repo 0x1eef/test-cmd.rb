@@ -146,11 +146,13 @@ class Test::Cmd
     [
       [".testcmd.stdout.#{ns}.", SecureRandom.alphanumeric(3)],
       [".testcmd.stderr.#{ns}.", SecureRandom.alphanumeric(3)]
-    ].map {
-      file = Tempfile.new(_1)
-      File.chmod(0, file.path)
-      file.tap(&:unlink)
-    }
+    ].map do
+      Tempfile.new(_1).tap do |file|
+        File.chmod(0, file.path)
+      ensure
+        file.unlink
+      end
+    end
   end
 
   def ns

@@ -98,7 +98,7 @@ p cmd("ruby", "test.rb").stdout # => "foo\nbar\n"
 ## Documentation
 
 A complete API reference is available at
-[0x1eef.github.io/x/test-cmd.rb](https://0x1eef.github.io/x/test-cmd.rb).
+[0x1eef.github.io/x/test-cmd.rb](https://0x1eef.github.io/x/test-cmd.rb)
 
 ## Install
 
@@ -115,6 +115,6 @@ test-cmd.rb can be installed via rubygems.org:
 
 ## License
 
-[BSD Zero Clause](https://choosealicense.com/licenses/0bsd/).
+[BSD Zero Clause](https://choosealicense.com/licenses/0bsd/)
 <br>
-See [LICENSE](./LICENSE).
+See [LICENSE](./LICENSE)
