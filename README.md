@@ -57,10 +57,11 @@ end
 
 ### IO#sync
 
-Sometimes it can be neccessary to bypass Ruby's internal buffer and flush
-output to the operating system immediately, otherwise there can be unexpected
-results. Consider the following example, where the output will be
-`bar\nfoo\n` rather than `foo\nbar\n`:
+Sometimes it can be neccessary to flush output to
+the operating system immediately, otherwise there
+can be unexpected results. Consider the following
+example, where the output will be `bar\nfoo\n`
+instead of `foo\nbar\n`:
 
 ``` ruby
 ##
@@ -77,7 +78,8 @@ Process.wait
 p cmd("ruby", "test.rb").stdout # => "bar\nfoo\n"
 ```
 
-And with output flushed to the operating system immediately:
+And with output flushed to the operating system
+immediately (`$stdout.sync = true`):
 
 ``` ruby
 ##
