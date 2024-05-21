@@ -8,8 +8,8 @@ a command.
 ### Callbacks
 
 The success and failure callbacks provide hooks for when
-a command exits successfully or unsuccessfully. The callback
-is passed an instance of
+a command exits successfully or unsuccessfully. The callbacks
+are passed an instance of
 [Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html):
 
 ``` ruby
