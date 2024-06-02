@@ -55,48 +55,6 @@ class CmdTest < Test::Unit::TestCase
 end
 ```
 
-### IO#sync
-
-Sometimes it can be neccessary to flush output to
-the operating system immediately, otherwise there
-can be unexpected results. Consider the following
-example, where the output will be `bar\nfoo\n`
-instead of `foo\nbar\n`:
-
-``` ruby
-##
-# test.rb
-fork do
-  sleep(1)
-  puts "bar"
-end
-puts "foo"
-Process.wait
-
-##
-# cmd.rb
-p cmd("ruby", "test.rb").stdout # => "bar\nfoo\n"
-```
-
-And with output flushed to the operating system
-immediately (`$stdout.sync = true`):
-
-``` ruby
-##
-# test.rb
-$stdout.sync = true
-fork do
-  sleep(1)
-  puts "bar"
-end
-puts "foo"
-Process.wait
-
-##
-# cmd.rb
-p cmd("ruby", "test.rb").stdout # => "foo\nbar\n"
-```
-
 ## Documentation
 
 A complete API reference is available at
