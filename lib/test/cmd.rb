@@ -1,5 +1,7 @@
-module Test
-end unless defined?(Test)
+unless defined?(Test)
+  module Test
+  end
+end
 
 ##
 # test-cmd.rb provides an object oriented interface

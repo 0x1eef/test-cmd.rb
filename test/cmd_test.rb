@@ -3,6 +3,7 @@ require_relative "setup"
 class Test::Cmd
   class Test < Test::Unit::TestCase
     private
+
     def ruby(str)
       cmd "ruby", "-e", str
     end
@@ -57,7 +58,7 @@ class Test::Cmd
       end
       puts "foo"
       Process.wait
-    CODE
+      CODE
       assert_equal "foo\nbar\n", ruby(code).stdout
     end
   end
