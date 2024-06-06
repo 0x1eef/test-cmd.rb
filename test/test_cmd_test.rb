@@ -93,13 +93,6 @@ class Test::Cmd
       end
     end
 
-    def test_io_unlink_after_spawn
-      %i[out_io err_io].each do |io|
-        path = spawned_command.send(io).__getobj__.path
-        assert_equal false, File.exist?(path)
-      end
-    end
-
     private
 
     def spawned_command

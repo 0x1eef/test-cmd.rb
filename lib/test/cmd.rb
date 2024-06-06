@@ -5,9 +5,6 @@ end unless defined?(Test)
 # test-cmd.rb provides an object oriented interface
 # for spawning a command.
 class Test::Cmd
-  require "tempfile"
-  require "securerandom"
-
   ##
   # @param [String] cmd
   #  A command to spawn
@@ -37,11 +34,13 @@ class Test::Cmd
 
     tap do
       @spawned = true
-      @out_io, @err_io = spawn_io
-      Process.spawn(@cmd, *@argv, {out: @out_io, err: @err_io})
+      @out_io, out = IO.pipe
+      @err_io, err = IO.pipe
+      Process.spawn(@cmd, *@argv, {out:, err:})
       Process.wait
       @status = $?
     ensure
+      [out, err].each(&:close)
       [stdout, stderr]
     end
   end
@@ -52,7 +51,7 @@ class Test::Cmd
   def stdout
     @stdout ||= begin
       spawn
-      out_io.tap(&:rewind).read.tap { out_io.close }
+      out_io.read.tap { out_io.close }
     rescue IOError
       @stdout
     end
@@ -64,7 +63,7 @@ class Test::Cmd
   def stderr
     @stderr ||= begin
       spawn
-      err_io.tap(&:rewind).read.tap { err_io.close }
+      err_io.read.tap { err_io.close }
     rescue IOError
       @stderr
     end
@@ -141,23 +140,6 @@ class Test::Cmd
   private
 
   attr_reader :out_io, :err_io
-
-  def spawn_io
-    [
-      [".testcmd.stdout.#{ns}.", SecureRandom.alphanumeric(3)],
-      [".testcmd.stderr.#{ns}.", SecureRandom.alphanumeric(3)]
-    ].map do
-      Tempfile.new(_1).tap do |file|
-        File.chmod(0, file.path)
-      ensure
-        file.unlink
-      end
-    end
-  end
-
-  def ns
-    [Process.pid, object_id].join(".")
-  end
 end
 
 module Kernel
