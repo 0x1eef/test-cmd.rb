@@ -57,10 +57,10 @@ class Test::Cmd
         @status = $?
       end
       loop do
-        break unless t.alive?
         io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
         io&.include?(out.r) ? @stdout << out.r.read(1) : nil
         io&.include?(err.r) ? @stderr << err.r.read(1) : nil
+        break unless t.alive? || IO.select([out.r, err.r], nil, nil, 0.01)
       end
     ensure
       [out, err].each(&:close)
