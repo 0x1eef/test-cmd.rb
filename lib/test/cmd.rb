@@ -8,6 +8,18 @@ end
 # for spawning a command.
 class Test::Cmd
   ##
+  # @api private
+  class Pipe < Struct.new(:r, :w)
+    def self.pair
+      new(*IO.pipe)
+    end
+
+    def close
+      [r, w].each(&:close)
+    end
+  end
+
+  ##
   # @param [String] cmd
   #  A command to spawn
   # @param [Array<String>] argv
@@ -18,6 +30,8 @@ class Test::Cmd
     @argv = argv.dup
     @status = nil
     @spawned = false
+    @stdout = ""
+    @stderr = ""
   end
 
   ##
@@ -35,15 +49,21 @@ class Test::Cmd
     return self if @spawned
 
     tap do
-      @spawned = true
-      @out_io, out = IO.pipe
-      @err_io, err = IO.pipe
-      Process.spawn(@cmd, *@argv, {out:, err:})
-      Process.wait
-      @status = $?
+      out, err = Pipe.pair, Pipe.pair
+      t = Thread.new do
+        @spawned = true
+        Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
+        Process.wait
+        @status = $?
+      end
+      loop do
+        break unless t.alive?
+        io, _ = IO.select([out.r, err.r], nil, nil, 0.05)
+        io&.include?(out.r) ? @stdout << out.r.read(1) : nil
+        io&.include?(err.r) ? @stderr << err.r.read(1) : nil
+      end
     ensure
       [out, err].each(&:close)
-      [stdout, stderr]
     end
   end
 
@@ -51,24 +71,16 @@ class Test::Cmd
   # @return [String]
   #  Returns the contents of stdout
   def stdout
-    @stdout ||= begin
-      spawn
-      out_io.read.tap { out_io.close }
-    rescue IOError
-      @stdout
-    end
+    spawn
+    @stdout
   end
 
   ##
   # @return [String]
   #  Returns the contents of stderr
   def stderr
-    @stderr ||= begin
-      spawn
-      err_io.read.tap { err_io.close }
-    rescue IOError
-      @stderr
-    end
+    spawn
+    @stderr
   end
 
   ##

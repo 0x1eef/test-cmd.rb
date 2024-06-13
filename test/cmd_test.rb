@@ -86,22 +86,6 @@ class Test::Cmd
   end
 
   ##
-  # Test::Cmd#spawn
-  class SpawnTest < Test
-    def test_io_closed_after_spawn
-      %i[out_io err_io].each do |io|
-        assert_equal true, spawned_command.send(io).closed?
-      end
-    end
-
-    private
-
-    def spawned_command
-      ruby("puts 42").spawn
-    end
-  end
-
-  ##
   # Test::Cmd#spawned?
   class SpawnedTest < Test
     def test_spawned_before_spawn
