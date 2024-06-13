@@ -58,7 +58,7 @@ class Test::Cmd
       end
       loop do
         break unless t.alive?
-        io, _ = IO.select([out.r, err.r], nil, nil, 0.05)
+        io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
         io&.include?(out.r) ? @stdout << out.r.read(1) : nil
         io&.include?(err.r) ? @stderr << err.r.read(1) : nil
       end
