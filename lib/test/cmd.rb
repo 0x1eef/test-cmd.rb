@@ -50,8 +50,8 @@ class Test::Cmd
 
     tap do
       out, err = Pipe.pair, Pipe.pair
+      @spawned = true
       t = Thread.new do
-        @spawned = true
         Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
         Process.wait
         @status = $?
@@ -150,10 +150,6 @@ class Test::Cmd
   def spawned?
     @spawned
   end
-
-  private
-
-  attr_reader :out_io, :err_io
 end
 
 module Kernel
