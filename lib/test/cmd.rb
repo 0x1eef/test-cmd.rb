@@ -107,6 +107,7 @@ class Test::Cmd
   def exit_status
     status.exitstatus
   end
+  alias_method :exitstatus, :exit_status
 
   ##
   # @return [Boolean]
