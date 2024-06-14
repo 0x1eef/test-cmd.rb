@@ -65,6 +65,11 @@ class Test::Cmd
       CODE
       assert_equal "foo\nbar\n", ruby(code).stdout
     end
+
+    def test_nonexistent_command
+      assert_equal "No such file or directory - /a/path/that/is/not/found",
+                   cmd("/a/path/that/is/not/found").stderr
+    end
   end
 
   ##
