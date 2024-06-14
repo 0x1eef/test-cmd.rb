@@ -36,6 +36,10 @@ class Test::Cmd
       assert_equal true, ruby("exit 0").status.success?
       assert_equal true, ruby("exit 0").success?
     end
+
+    def test_nonexistent_command
+      assert_equal false, cmd("/a/path/that/is/not/found").success?
+    end
   end
 
   ##

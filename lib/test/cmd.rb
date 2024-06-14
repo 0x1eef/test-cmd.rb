@@ -55,6 +55,9 @@ class Test::Cmd
         Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
         Process.wait
         @status = $?
+      rescue Errno::ENOENT
+        @cmd, @argv = "false", []
+        retry
       end
       loop do
         io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
