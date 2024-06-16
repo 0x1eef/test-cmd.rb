@@ -105,4 +105,13 @@ class Test::Cmd
       assert_equal true, ruby("puts 42").tap(&:spawn).spawned?
     end
   end
+
+  ##
+  # Test::Cmd#command_not_found?
+  class CommandNotFoundTest < Test
+    def test_command_not_found
+      assert_equal true, cmd("/a/path/that/is/not/found").command_not_found?
+      assert_equal true, cmd("/a/path/that/is/not/found").not_found?
+    end
+  end
 end

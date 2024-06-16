@@ -32,6 +32,7 @@ class Test::Cmd
     @spawned = false
     @stdout = ""
     @stderr = ""
+    @enoent = false
   end
 
   ##
@@ -57,6 +58,7 @@ class Test::Cmd
         @status = $?
       rescue Errno::ENOENT => ex
         @cmd, @argv, @stderr = "false", [], ex.message
+        @enoent = true
         retry
       end
       loop do
@@ -154,6 +156,15 @@ class Test::Cmd
   def spawned?
     @spawned
   end
+
+  ##
+  # @return [Boolean]
+  #  Returns true when a command can't be found
+  def command_not_found?
+    spawn
+    @enoent
+  end
+  alias_method :not_found?, :command_not_found?
 end
 
 module Kernel
