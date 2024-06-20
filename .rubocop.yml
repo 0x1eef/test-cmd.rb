@@ -8,16 +8,20 @@ require:
 inherit_gem:
   standard: config/base.yml
 
+##
+# Enabled
 AllCops:
   TargetRubyVersion: 3.1
   Include:
     - 'lib/**/*.rb'
     - 'test/**/*.rb'
 
-Style/MultilineIfModifier:
-  Exclude:
-    - 'lib/test-cmd.rb'
-
+##
+# Disabled
 Layout/MultilineMethodCallIndentation:
   Exclude:
     - 'test/*.rb'
+Layout/ArgumentAlignment:
+  Enabled: false
+Style/MultilineIfModifier:
+  Enabled: false
