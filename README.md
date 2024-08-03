@@ -1,7 +1,7 @@
 ## About
 
 test-cmd.rb provides an object-oriented interface for spawning
-a process.
+a command.
 
 ## Examples
 
