@@ -144,8 +144,8 @@ class Test::Cmd
   # @group Callbacks
 
   ##
-  # Yields an instance of {Test::Cmd Test::Cmd}.
-  #
+  # @yieldparam [Test::Cmd] cmd
+  #  Yields an instance of {Test::Cmd Test::Cmd}
   # @example
   #   cmd("ruby", "-e", "exit 0")
   #     .success { print "Command [#{_1.pid}] exited successfully", "\n" }
@@ -160,8 +160,8 @@ class Test::Cmd
   end
 
   ##
-  # Yields an instance of {Test::Cmd Test::Cmd}.
-  #
+  # @yieldparam [Test::Cmd] cmd
+  #  Yields an instance of {Test::Cmd Test::Cmd}
   # @example
   #   cmd("ruby", "-e", "exit 1")
   #     .success { }
