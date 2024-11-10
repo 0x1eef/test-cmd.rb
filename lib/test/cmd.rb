@@ -71,22 +71,6 @@ class Test::Cmd
   end
 
   ##
-  # @return [String]
-  #  Returns the contents of stdout
-  def stdout
-    spawn
-    @stdout
-  end
-
-  ##
-  # @return [String]
-  #  Returns the contents of stderr
-  def stderr
-    spawn
-    @stderr
-  end
-
-  ##
   # @return [Process::Status]
   #  Returns the status of a process
   def status
@@ -110,11 +94,54 @@ class Test::Cmd
   alias_method :exitstatus, :exit_status
 
   ##
+  # @group IO
+
+  ##
+  # @return [String]
+  #  Returns the contents of stdout
+  def stdout
+    spawn
+    @stdout
+  end
+
+  ##
+  # @return [String]
+  #  Returns the contents of stderr
+  def stderr
+    spawn
+    @stderr
+  end
+  # @endgroup
+
+  ##
+  # @group Predicates
+
+  ##
   # @return [Boolean]
   #  Returns true when a command exited successfully
   def success?
     status.success?
   end
+
+  ##
+  # @return [Boolean]
+  #  Returns true when a command has been spawned
+  def spawned?
+    @spawned
+  end
+
+  ##
+  # @return [Boolean]
+  #  Returns true when a command can't be found
+  def command_not_found?
+    spawn
+    @enoent
+  end
+  alias_method :not_found?, :command_not_found?
+  # @endgroup
+
+  ##
+  # @group Callbacks
 
   ##
   # Yields an instance of {Test::Cmd Test::Cmd}.
@@ -147,22 +174,7 @@ class Test::Cmd
       status.success? ? nil : yield(self)
     end
   end
-
-  ##
-  # @return [Boolean]
-  #  Returns true when a command has been spawned
-  def spawned?
-    @spawned
-  end
-
-  ##
-  # @return [Boolean]
-  #  Returns true when a command can't be found
-  def command_not_found?
-    spawn
-    @enoent
-  end
-  alias_method :not_found?, :command_not_found?
+  # @endgroup
 end
 
 module Kernel
