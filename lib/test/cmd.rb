@@ -3,7 +3,7 @@ end unless defined?(Test)
 
 ##
 # test-cmd.rb provides an object oriented interface
-# for spawning a command.
+# for spawning a command
 class Test::Cmd
   ##
   # @api private
@@ -150,7 +150,6 @@ class Test::Cmd
   #   cmd("ruby", "-e", "exit 0")
   #     .success { print "Command [#{_1.pid}] exited successfully", "\n" }
   #     .failure { }
-  #
   # @return [Test::Cmd]
   def success
     tap do
@@ -166,7 +165,6 @@ class Test::Cmd
   #   cmd("ruby", "-e", "exit 1")
   #     .success { }
   #     .failure { print "Command [#{_1.pid}] exited unsuccessfully", "\n" }
-  #
   # @return [Test::Cmd]
   def failure
     tap do
