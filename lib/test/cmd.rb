@@ -47,8 +47,8 @@ class Test::Cmd
   def spawn
     return self if @spawned
     tap do
-      out, err = Pipe.pair, Pipe.pair
       @spawned = true
+      out, err = Pipe.pair, Pipe.pair
       consume(produce(out, err), out, err)
     ensure
       [out, err].each(&:close)
