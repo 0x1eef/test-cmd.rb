@@ -50,21 +50,7 @@ class Test::Cmd
     tap do
       out, err = Pipe.pair, Pipe.pair
       @spawned = true
-      t = Thread.new do
-        Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
-        Process.wait
-        @status = $?
-      rescue Errno::ENOENT => ex
-        @cmd, @argv, @stderr = "false", [], ex.message
-        @enoent = true
-        retry
-      end
-      loop do
-        io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
-        io&.include?(out.r) ? @stdout << out.r.read(1) : nil
-        io&.include?(err.r) ? @stderr << err.r.read(1) : nil
-        break unless t.alive? || IO.select([out.r, err.r], nil, nil, 0.01)
-      end
+      consume(produce(out, err), out, err)
     ensure
       [out, err].each(&:close)
     end
@@ -173,6 +159,44 @@ class Test::Cmd
     end
   end
   # @endgroup
+
+  private
+
+  ##
+  # @param [Test::Cmd::Pipe] out
+  #  A pipe for stdout
+  # @param [Test::Cmd::Pipe] err
+  #  A pipe for stderr
+  # @return [Thread]
+  #  Returns a thread for a spawned command
+  def produce(out, err)
+    Thread.new do
+      Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
+      Process.wait
+      @status = $?
+    rescue Errno::ENOENT => ex
+      @cmd, @argv, @stderr = "false", [], ex.message
+      @enoent = true
+      retry
+    end
+  end
+
+  ##
+  # @param [Thread] thread
+  #  A thread for a spawned command
+  # @param [Test::Cmd::Pipe] out
+  #  A pipe for stdout
+  # @param [Test::Cmd::Pipe] err
+  #  A pipe for stderr
+  # @return [void]
+  def consume(thread, out, err)
+    loop do
+      io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
+      io&.include?(out.r) ? @stdout << out.r.read(1) : nil
+      io&.include?(err.r) ? @stderr << err.r.read(1) : nil
+      break unless thread.alive? || IO.select([out.r, err.r], nil, nil, 0.01)
+    end
+  end
 end
 
 module Kernel
