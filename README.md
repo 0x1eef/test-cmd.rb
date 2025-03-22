@@ -68,8 +68,8 @@ test-cmd.rb can be installed via rubygems.org:
 
 ## Sources
 
-* [GitHub](https://github.com/0x1eef/test-cmd.rb#readme)
-* [GitLab](https://gitlab.com/0x1eef/test-cmd.rb#about)
+* [github.com/@0x1eef](https://github.com/0x1eef/test-cmd.rb#readme)
+* [gitlab.com/@0x1eef](https://gitlab.com/0x1eef/test-cmd.rb#about)
 
 ## License
 
