@@ -46,7 +46,6 @@ class Test::Cmd
   # @return [Test::Cmd]
   def spawn
     return self if @spawned
-
     tap do
       out, err = Pipe.pair, Pipe.pair
       @spawned = true
