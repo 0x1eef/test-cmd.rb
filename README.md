@@ -1,16 +1,21 @@
 ## About
 
 test-cmd.rb provides an object-oriented interface for spawning
-a command.
+a command on UNIX-like operating systems. The library is intended
+to be simple, lightweight, and easy to use.
 
 ## Examples
 
-### Callbacks
+### Commands
+
+#### Callbacks
 
 The success and failure callbacks provide hooks for when
 a command exits successfully or unsuccessfully. The callbacks
 are passed an instance of
-[Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html):
+[Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html)
+that has access to the command's process ID, exit status,
+standard ouput stream, and standard error stream:
 
 ``` ruby
 require "test-cmd"
@@ -19,12 +24,14 @@ cmd("ruby", "-e", "exit 0")
   .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
 ```
 
-### Test::Unit
+#### Assertions
 
 The following example demonstrates how tests might be written with
 test-unit from the standard library. The
 [`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Kernel.html#cmd-instance_method)
-method takes the name or path of a command, alongside any arguments:
+method takes the name or path of a command, alongside any arguments. The tests
+assert against the exit status, standard output stream, and standard error
+stream of the spawned ruby process:
 
 ```ruby
 require "test/unit"
