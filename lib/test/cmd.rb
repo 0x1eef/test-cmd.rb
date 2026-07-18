@@ -125,6 +125,14 @@ class Test::Cmd
   alias_method :running?, :alive?
 
   ##
+  # Sends SIGKILL to a running command
+  # @return [void]
+  def kill!
+    return unless alive?
+    Process.kill("SIGKILL", @pid)
+  end
+
+  ##
   # @return [Boolean]
   #  Returns true when a command can't be found
   def command_not_found?
@@ -182,7 +190,7 @@ class Test::Cmd
   #  Returns a thread for a spawned command
   def produce(out, err)
     @producer = Thread.new do
-      Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
+      @pid = Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
       Process.wait
       @status = $?
     rescue Errno::ENOENT => ex
