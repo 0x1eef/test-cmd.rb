@@ -2,10 +2,10 @@
 
 Gem::Specification.new do |gem|
   gem.name = "test-cmd.rb"
-  gem.authors = ["0x1eef"]
-  gem.email = ["0x1eef@protonmail.com"]
+  gem.authors = ["robert"]
+  gem.email = ["robert@r.uby.dev"]
   gem.homepage = "https://github.com/1robertrb/test-cmd.rb#readme"
-  gem.version = "1.0.0"
+  gem.version = "1.1.0"
   gem.required_ruby_version = ">= 3.0"
   gem.licenses = ["0BSD"]
   gem.files = `git ls-files`.split($/)
