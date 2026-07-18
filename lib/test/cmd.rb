@@ -48,10 +48,8 @@ class Test::Cmd
     return self if @spawned
     tap do
       @spawned = true
-      out, err = Pipe.pair, Pipe.pair
-      consume(produce(out, err), out, err)
-    ensure
-      [out, err].each(&:close)
+      @out, @err = Pipe.pair, Pipe.pair
+      produce(@out, @err)
     end
   end
 
@@ -60,6 +58,7 @@ class Test::Cmd
   #  Returns the status of a process
   def status
     spawn
+    consume(@producer, @out, @err)
     @status
   end
 
@@ -86,6 +85,7 @@ class Test::Cmd
   #  Returns the contents of stdout
   def stdout
     spawn
+    consume(@producer, @out, @err)
     @stdout
   end
 
@@ -94,6 +94,7 @@ class Test::Cmd
   #  Returns the contents of stderr
   def stderr
     spawn
+    consume(@producer, @out, @err)
     @stderr
   end
   # @endgroup
@@ -117,9 +118,18 @@ class Test::Cmd
 
   ##
   # @return [Boolean]
+  #  Returns true when a command is running
+  def alive?
+    @producer&.alive?
+  end
+  alias_method :running?, :alive?
+
+  ##
+  # @return [Boolean]
   #  Returns true when a command can't be found
   def command_not_found?
     spawn
+    consume(@producer, @out, @err)
     @enoent
   end
   alias_method :not_found?, :command_not_found?
@@ -139,6 +149,7 @@ class Test::Cmd
   def success
     tap do
       spawn
+      consume(@producer, @out, @err)
       status.success? ? yield(self) : nil
     end
   end
@@ -154,6 +165,7 @@ class Test::Cmd
   def failure
     tap do
       spawn
+      consume(@producer, @out, @err)
       status.success? ? nil : yield(self)
     end
   end
@@ -169,7 +181,7 @@ class Test::Cmd
   # @return [Thread]
   #  Returns a thread for a spawned command
   def produce(out, err)
-    Thread.new do
+    @producer = Thread.new do
       Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
       Process.wait
       @status = $?
@@ -189,12 +201,17 @@ class Test::Cmd
   #  A pipe for stderr
   # @return [void]
   def consume(thread, out, err)
+    return if @consumed
+    sleep 0.01 while thread.alive?
     loop do
       io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
       io&.include?(out.r) ? @stdout << out.r.read(1) : nil
       io&.include?(err.r) ? @stderr << err.r.read(1) : nil
       break unless thread.alive? || IO.select([out.r, err.r], nil, nil, 0.01)
     end
+  ensure
+    [out, err].each(&:close)
+    @consumed = true
   end
 end
 
