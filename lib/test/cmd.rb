@@ -31,6 +31,7 @@ class Test::Cmd
     @stdout = ""
     @stderr = ""
     @enoent = false
+    @waiter = Queue.new
   end
 
   ##
@@ -50,6 +51,7 @@ class Test::Cmd
       @spawned = true
       @out, @err = Pipe.pair, Pipe.pair
       produce(@out, @err)
+      @waiter.pop
     end
   end
 
@@ -191,6 +193,7 @@ class Test::Cmd
   def produce(out, err)
     @producer = Thread.new do
       @pid = Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
+      @waiter.push(nil)
       Process.wait
       @status = $?
     rescue Errno::ENOENT => ex
