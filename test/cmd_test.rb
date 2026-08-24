@@ -1,28 +1,28 @@
 require_relative "setup"
 
-class Test::Cmd
+class Test::Command
   class Test < Test::Unit::TestCase
     private
 
     def ruby(str)
-      cmd "ruby", "-e", str
+      ::Test::Command.new "ruby", "-e", str
     end
   end
 end
 
-class Test::Cmd
+class Test::Command
   ##
-  # Test::Cmd#argv
+  # Test::Command#argv
   class ARGVTest < Test
     def test_ruby_argv
-      assert_equal "42\n", cmd("ruby")
+      assert_equal "42\n", ::Test::Command.new("ruby")
                              .argv("-e", "warn 42")
                              .stderr
     end
   end
 
   ##
-  # Test::Cmd#{exit_status, status, success?}
+  # Test::Command#{exit_status, status, success?}
   class ExitStatusTest < Test
     def test_ruby_exit_status_success
       assert_equal 0, ruby("exit 0").exit_status
@@ -38,12 +38,12 @@ class Test::Cmd
     end
 
     def test_nonexistent_command
-      assert_equal false, cmd("/a/path/that/is/not/found").success?
+      assert_equal false, ::Test::Command.new("/a/path/that/is/not/found").success?
     end
   end
 
   ##
-  # Test::Cmd#{stdout,stderr}
+  # Test::Command#{stdout,stderr}
   class OutputTest < Test
     def test_ruby_stdout
       assert_equal "42\n", ruby("puts 42").stdout
@@ -68,12 +68,12 @@ class Test::Cmd
 
     def test_nonexistent_command
       assert_equal "No such file or directory - /a/path/that/is/not/found",
-                   cmd("/a/path/that/is/not/found").stderr
+                   ::Test::Command.new("/a/path/that/is/not/found").stderr
     end
   end
 
   ##
-  # Test::Cmd#{success, failure}
+  # Test::Command#{success, failure}
   class CallbackTest < Test
     def test_ruby_success_callback
       call_ok, call_fail = [false, false]
@@ -95,7 +95,7 @@ class Test::Cmd
   end
 
   ##
-  # Test::Cmd#spawned?
+  # Test::Command#spawned?
   class SpawnedTest < Test
     def test_spawned_before_spawn
       assert_equal false, ruby("puts 42").spawned?
@@ -107,11 +107,11 @@ class Test::Cmd
   end
 
   ##
-  # Test::Cmd#command_not_found?
+  # Test::Command#command_not_found?
   class CommandNotFoundTest < Test
     def test_command_not_found
-      assert_equal true, cmd("/a/path/that/is/not/found").command_not_found?
-      assert_equal true, cmd("/a/path/that/is/not/found").not_found?
+      assert_equal true, ::Test::Command.new("/a/path/that/is/not/found").command_not_found?
+      assert_equal true, ::Test::Command.new("/a/path/that/is/not/found").not_found?
     end
   end
 end

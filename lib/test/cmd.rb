@@ -4,7 +4,7 @@ end unless defined?(Test)
 ##
 # test-cmd.rb provides an object oriented interface
 # for spawning a command
-class Test::Cmd
+class Test::Command
   ##
   # @api private
   class Pipe < Struct.new(:r, :w)
@@ -22,7 +22,7 @@ class Test::Cmd
   #  A command to spawn
   # @param [Array<String>] argv
   #  Zero or more command-line arguments
-  # @return [Test::Cmd]
+  # @return [Test::Command]
   def initialize(cmd, *argv)
     @cmd = cmd
     @argv = argv.dup
@@ -36,14 +36,14 @@ class Test::Cmd
   ##
   # @param [Array<String, #to_s>] argv
   #  Command-line arguments
-  # @return [Test::Cmd]
+  # @return [Test::Command]
   def argv(*argv)
     tap { @argv.concat(argv) }
   end
 
   ##
   # Spawns a command
-  # @return [Test::Cmd]
+  # @return [Test::Command]
   def spawn
     return self if @spawned
     tap do
@@ -175,13 +175,13 @@ class Test::Cmd
   # @group Callbacks
 
   ##
-  # @yieldparam [Test::Cmd] cmd
-  #  Yields an instance of {Test::Cmd Test::Cmd}
+  # @yieldparam [Test::Command] cmd
+  #  Yields an instance of {Test::Command Test::Command}
   # @example
-  #   cmd("ruby", "-e", "exit 0").success do
+  #   Test::Command.new("ruby", "-e", "exit 0").success do
   #     print "ok pid #{_1.pid}", "\n"
   #   end
-  # @return [Test::Cmd]
+  # @return [Test::Command]
   def success
     tap do
       spawn
@@ -191,13 +191,13 @@ class Test::Cmd
   end
 
   ##
-  # @yieldparam [Test::Cmd] cmd
-  #  Yields an instance of {Test::Cmd Test::Cmd}
+  # @yieldparam [Test::Command] cmd
+  #  Yields an instance of {Test::Command Test::Command}
   # @example
-  #   cmd("ruby", "-e", "exit 1").failure do
+  #   Test::Command.new("ruby", "-e", "exit 1").failure do
   #     print "fail pid #{_1.pid}", "\n"
   #   end
-  # @return [Test::Cmd]
+  # @return [Test::Command]
   def failure
     tap do
       spawn
@@ -217,14 +217,5 @@ class Test::Cmd
   def consume
     return unless @producer&.alive?
     @producer.join
-  end
-end
-
-module Kernel
-  ##
-  # @param (see Test::Cmd#initialize)
-  # @return (see Test::Cmd#initialize)
-  def cmd(cmd, *argv)
-    Test::Cmd.new(cmd, *argv)
   end
 end
