@@ -1,34 +1,72 @@
-## About
+<p align="center">
+  <a href="https://r.uby.dev">
+    <img
+      src="rubydev.svg"
+      width="400"
+      height="200"
+      border="0"
+      alt="a r.uby.dev project"
+     >
+  </a>
+</p>
+
+> A [r.uby.dev](https://r.uby.dev) project.
+
+Welcome to the canonical test-cmd.rb repository.
 
 test-cmd.rb provides an object-oriented interface for spawning
 a command on UNIX-like operating systems. The library is intended
 to be simple, lightweight, and easy to use.
 
-## Examples
+## Install
+
+test-cmd.rb can be installed via rubygems.org:
+
+    gem install test-cmd.rb
+
+## Quick start
 
 ### Commands
 
-#### Callbacks
+The
+[`cmd`](https://r.uby.dev/api-docs/test-cmd.rb/Kernel.html#cmd-instance_method)
+method takes the name or path of a command, alongside any arguments.
+It returns an instance of
+[Test::Cmd](https://r.uby.dev/api-docs/test-cmd.rb/Test/Cmd.html)
+that has access to the command's process ID, exit status,
+standard output stream, and standard error stream.
+
+```ruby
+require "test-cmd"
+cmd("ruby", "-e", "puts 42").stdout  # => "42\n"
+```
+
+<details>
+<summary>Callbacks</summary>
+<br>
 
 The success and failure callbacks provide hooks for when
 a command exits successfully or unsuccessfully. The callbacks
 are passed an instance of
-[Test::Cmd](https://0x1eef.github.io/x/test-cmd.rb/Test/Cmd.html)
+[Test::Cmd](https://r.uby.dev/api-docs/test-cmd.rb/Test/Cmd.html)
 that has access to the command's process ID, exit status,
-standard ouput stream, and standard error stream:
+standard output stream, and standard error stream.
 
-``` ruby
+```ruby
 require "test-cmd"
 cmd("ruby", "-e", "exit 0")
   .success { print "The command [#{_1.pid}] was successful", "\n" }
   .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
 ```
+</details>
 
-#### Assertions
+<details>
+<summary>Assertions</summary>
+<br>
 
 The following example demonstrates how tests might be written with
 test-unit from the standard library. The
-[`cmd`](https://0x1eef.github.io/x/test-cmd.rb/Kernel.html#cmd-instance_method)
+[`cmd`](https://r.uby.dev/api-docs/test-cmd.rb/Kernel.html#cmd-instance_method)
 method takes the name or path of a command, alongside any arguments. The tests
 assert against the exit status, standard output stream, and standard error
 stream of the spawned ruby process:
@@ -61,17 +99,12 @@ class CmdTest < Test::Unit::TestCase
   end
 end
 ```
+</details>
 
 ## Documentation
 
 A complete API reference is available at
-[0x1eef.github.io/x/test-cmd.rb](https://0x1eef.github.io/x/test-cmd.rb)
-
-## Install
-
-test-cmd.rb can be installed via rubygems.org:
-
-    gem install test-cmd.rb
+[r.uby.dev/api-docs/test-cmd.rb](https://r.uby.dev/api-docs/test-cmd.rb)
 
 ## Sources
 
@@ -80,6 +113,5 @@ test-cmd.rb can be installed via rubygems.org:
 
 ## License
 
-[BSD Zero Clause](https://choosealicense.com/licenses/0bsd/)
-<br>
-See [LICENSE](./LICENSE)
+This software is released under the terms of the BSD Zero Clause license. <br>
+See [LICENSE](./LICENSE) for details.
