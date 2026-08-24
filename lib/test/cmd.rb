@@ -31,7 +31,6 @@ class Test::Cmd
     @stdout = ""
     @stderr = ""
     @enoent = false
-    @waiter = Queue.new
   end
 
   ##
@@ -50,9 +49,36 @@ class Test::Cmd
     tap do
       @spawned = true
       @out, @err = Pipe.pair, Pipe.pair
-      produce(@out, @err)
-      @waiter.pop
+      ##
+      # Spawn in the calling thread so the command's fds are
+      # wired up before the reader thread starts. We then close
+      # our own copies of the write ends so the reader thread
+      # observes EOF the moment the child exits, and reads both
+      # streams with whole-buffer reads rather than a byte at
+      # a time.
+      @pid = Process.spawn(
+        @cmd, *@argv,
+        {out: @out.w, err: @err.w, in: IO::NULL}
+      )
+      @out.w.close
+      @err.w.close
+      @producer = Thread.new do
+        @stdout = @out.r.read
+        @stderr = @err.r.read
+        Process.wait
+        @status = $?
+      ensure
+        @out.r.close
+        @err.r.close
+      end
     end
+  rescue Errno::ENOENT => ex
+    @stderr = ex.message
+    @enoent = true
+    ##
+    # Capture a real non-zero status so predicates like
+    # #success? work even though the command never spawned.
+    @status = Process.waitpid2(Process.spawn("false")).last
   end
 
   ##
@@ -60,7 +86,7 @@ class Test::Cmd
   #  Returns the status of a process
   def status
     spawn
-    consume(@producer, @out, @err)
+    consume
     @status
   end
 
@@ -87,7 +113,7 @@ class Test::Cmd
   #  Returns the contents of stdout
   def stdout
     spawn
-    consume(@producer, @out, @err)
+    consume
     @stdout
   end
 
@@ -96,7 +122,7 @@ class Test::Cmd
   #  Returns the contents of stderr
   def stderr
     spawn
-    consume(@producer, @out, @err)
+    consume
     @stderr
   end
   # @endgroup
@@ -139,7 +165,7 @@ class Test::Cmd
   #  Returns true when a command can't be found
   def command_not_found?
     spawn
-    consume(@producer, @out, @err)
+    consume
     @enoent
   end
   alias_method :not_found?, :command_not_found?
@@ -152,14 +178,14 @@ class Test::Cmd
   # @yieldparam [Test::Cmd] cmd
   #  Yields an instance of {Test::Cmd Test::Cmd}
   # @example
-  #   cmd("ruby", "-e", "exit 0")
-  #     .success { print "Command [#{_1.pid}] exited successfully", "\n" }
-  #     .failure { }
+  #   cmd("ruby", "-e", "exit 0").success do
+  #     print "ok pid #{_1.pid}", "\n"
+  #   end
   # @return [Test::Cmd]
   def success
     tap do
       spawn
-      consume(@producer, @out, @err)
+      consume
       status.success? ? yield(self) : nil
     end
   end
@@ -168,14 +194,14 @@ class Test::Cmd
   # @yieldparam [Test::Cmd] cmd
   #  Yields an instance of {Test::Cmd Test::Cmd}
   # @example
-  #   cmd("ruby", "-e", "exit 1")
-  #     .success { }
-  #     .failure { print "Command [#{_1.pid}] exited unsuccessfully", "\n" }
+  #   cmd("ruby", "-e", "exit 1").failure do
+  #     print "fail pid #{_1.pid}", "\n"
+  #   end
   # @return [Test::Cmd]
   def failure
     tap do
       spawn
-      consume(@producer, @out, @err)
+      consume
       status.success? ? nil : yield(self)
     end
   end
@@ -184,45 +210,13 @@ class Test::Cmd
   private
 
   ##
-  # @param [Test::Cmd::Pipe] out
-  #  A pipe for stdout
-  # @param [Test::Cmd::Pipe] err
-  #  A pipe for stderr
-  # @return [Thread]
-  #  Returns a thread for a spawned command
-  def produce(out, err)
-    @producer = Thread.new do
-      @pid = Process.spawn(@cmd, *@argv, {out: out.w, err: err.w})
-      @waiter.push(nil)
-      Process.wait
-      @status = $?
-    rescue Errno::ENOENT => ex
-      @cmd, @argv, @stderr = "false", [], ex.message
-      @enoent = true
-      retry
-    end
-  end
-
-  ##
-  # @param [Thread] thread
-  #  A thread for a spawned command
-  # @param [Test::Cmd::Pipe] out
-  #  A pipe for stdout
-  # @param [Test::Cmd::Pipe] err
-  #  A pipe for stderr
+  # Blocks until the spawned command has finished, its
+  # output has been read, and its exit status captured.
+  # Safe to call more than once.
   # @return [void]
-  def consume(thread, out, err)
-    return if @consumed
-    sleep 0.01 while thread.alive?
-    loop do
-      io, _ = IO.select([out.r, err.r], nil, nil, 0.01)
-      io&.include?(out.r) ? @stdout << out.r.read(1) : nil
-      io&.include?(err.r) ? @stderr << err.r.read(1) : nil
-      break unless thread.alive? || IO.select([out.r, err.r], nil, nil, 0.01)
-    end
-  ensure
-    [out, err].each(&:close)
-    @consumed = true
+  def consume
+    return unless @producer&.alive?
+    @producer.join
   end
 end
 

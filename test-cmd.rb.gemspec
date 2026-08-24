@@ -4,7 +4,7 @@ Gem::Specification.new do |gem|
   gem.name = "test-cmd.rb"
   gem.authors = ["robert"]
   gem.email = ["robert@r.uby.dev"]
-  gem.homepage = "https://github.com/1robertrb/test-cmd.rb#readme"
+  gem.homepage = "https://github.com/0x1eef/test-cmd.rb#readme"
   gem.version = "1.1.0"
   gem.required_ruby_version = ">= 3.0"
   gem.licenses = ["0BSD"]
