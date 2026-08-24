@@ -44,7 +44,7 @@ standard output stream, and standard error stream.
 ```ruby
 require "test-cmd"
 puts Test::Command.new("ls").argv("-l").stdout
-Test::Command.new("env").env("FOO" => "bar").stdout
+puts Test::Command.new("env").env("FOO" => "bar").stdout
 ```
 
 <details>
