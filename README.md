@@ -58,7 +58,8 @@ returns the command for chaining.
 
 ```ruby
 require "test-cmd"
-puts Test::Command.new("ruby", "-e", "puts ENV['FOO']")
+puts Test::Command
+  .new("ruby", "-e", "puts ENV['FOO']")
   .env("FOO" => "42")
   .stdout  # => "42\n"
 ```
