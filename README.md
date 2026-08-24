@@ -16,11 +16,10 @@ Welcome to the canonical test-cmd.rb repository.
 
 test-cmd.rb is a Go-inspired, object-oriented interface for running
 commands on UNIX-like systems, in the spirit of Go's `os/exec`. A
-command is built with `cmd` and `argv`, then spawned so its stdout
-and stderr streams, process ID, and exit status are captured with
-a background thread. Predicates like `success?`, `alive?`, and
-`command_not_found?`, plus `success`/`failure` callbacks and `kill!`,
-cover the common cases with a small, dependency-free API.
+command is built up and then spawned so its standard output and
+error streams, process ID, and exit status are captured in the
+background. Predicates, callbacks, and process control cover the
+common cases with a small and dependency-free API.
 
 ## Install
 
