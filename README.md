@@ -31,17 +31,17 @@ test-cmd.rb can be installed via rubygems.org:
 
 ### Commands
 
-The
-[`cmd`](https://r.uby.dev/api-docs/test-cmd.rb/Kernel.html#cmd-instance_method)
-method takes the name or path of a command, alongside any arguments.
-It returns an instance of
-[Test::Cmd](https://r.uby.dev/api-docs/test-cmd.rb/Test/Cmd.html)
-that has access to the command's process ID, exit status,
+A command is created with
+[`Test::Command#initialize`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#initialize-instance_method)
+which takes the name or path of a command, and given additional
+arguments with
+[`Test::Command#argv`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#argv-instance_method).
+The instance has access to the command's process ID, exit status,
 standard output stream, and standard error stream.
 
 ```ruby
 require "test-cmd"
-cmd("ruby", "-e", "puts 42").stdout  # => "42\n"
+Test::Command.new("ls").argv("-l").stdout
 ```
 
 <details>
@@ -51,13 +51,13 @@ cmd("ruby", "-e", "puts 42").stdout  # => "42\n"
 The success and failure callbacks provide hooks for when
 a command exits successfully or unsuccessfully. The callbacks
 are passed an instance of
-[Test::Cmd](https://r.uby.dev/api-docs/test-cmd.rb/Test/Cmd.html)
+[Test::Command](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html)
 that has access to the command's process ID, exit status,
 standard output stream, and standard error stream.
 
 ```ruby
 require "test-cmd"
-cmd("ruby", "-e", "exit 0")
+Test::Command.new("ruby", "-e", "exit 0")
   .success { print "The command [#{_1.pid}] was successful", "\n" }
   .failure { print "The command [#{_1.pid}] was unsuccessful", "\n" }
 ```
@@ -68,9 +68,9 @@ cmd("ruby", "-e", "exit 0")
 <br>
 
 The following example demonstrates how tests might be written with
-test-unit from the standard library. The
-[`cmd`](https://r.uby.dev/api-docs/test-cmd.rb/Kernel.html#cmd-instance_method)
-method takes the name or path of a command, alongside any arguments. The tests
+test-unit from the standard library. A
+[Test::Command](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html)
+takes the name or path of a command, alongside any arguments. The tests
 assert against the exit status, standard output stream, and standard error
 stream of the spawned ruby process:
 
@@ -98,7 +98,7 @@ class CmdTest < Test::Unit::TestCase
   private
 
   def ruby(code)
-    cmd("ruby", "-e", code)
+    Test::Command.new("ruby", "-e", code)
   end
 end
 ```
