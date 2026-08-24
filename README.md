@@ -36,13 +36,33 @@ A command is created with
 which takes the name or path of a command, and given additional
 arguments with
 [`Test::Command#argv`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#argv-instance_method).
+Environment variables can be set for the spawned process with
+[`Test::Command#env`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#env-instance_method).
 The instance has access to the command's process ID, exit status,
 standard output stream, and standard error stream.
 
 ```ruby
 require "test-cmd"
-Test::Command.new("ls").argv("-l").stdout
+puts Test::Command.new("ls").argv("-l").stdout
+Test::Command.new("env").env("FOO" => "bar").stdout
 ```
+
+<details>
+<summary>Environment</summary>
+<br>
+
+Environment variables for the spawned process are set with
+[`Test::Command#env`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#env-instance_method),
+which merges the given variables into the child's environment and
+returns the command for chaining.
+
+```ruby
+require "test-cmd"
+puts Test::Command.new("ruby", "-e", "puts ENV['FOO']")
+  .env("FOO" => "42")
+  .stdout  # => "42\n"
+```
+</details>
 
 <details>
 <summary>Callbacks</summary>

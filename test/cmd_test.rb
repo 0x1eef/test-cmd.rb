@@ -22,6 +22,17 @@ class Test::Command
   end
 
   ##
+  # Test::Command#env
+  class EnvTest < Test
+    def test_ruby_env
+      assert_equal "42\n",
+                   ::Test::Command.new("ruby", "-e", "puts ENV['FOO']")
+                     .env("FOO" => "42")
+                     .stdout
+    end
+  end
+
+  ##
   # Test::Command#{exit_status, status, success?}
   class ExitStatusTest < Test
     def test_ruby_exit_status_success

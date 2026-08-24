@@ -26,6 +26,7 @@ class Test::Command
   def initialize(cmd, *argv)
     @cmd = cmd
     @argv = argv.dup
+    @env = {}
     @status = nil
     @spawned = false
     @stdout = ""
@@ -39,6 +40,14 @@ class Test::Command
   # @return [Test::Command]
   def argv(*argv)
     tap { @argv.concat(argv) }
+  end
+
+  ##
+  # @param [Hash{String => String}] env
+  #  Environment variables to set for the spawned command
+  # @return [Test::Command]
+  def env(env)
+    tap { @env.merge!(env) }
   end
 
   ##
@@ -57,6 +66,7 @@ class Test::Command
       # streams with whole-buffer reads rather than a byte at
       # a time.
       @pid = Process.spawn(
+        @env,
         @cmd, *@argv,
         {out: @out.w, err: @err.w, in: IO::NULL}
       )
