@@ -109,11 +109,6 @@ end
 A complete API reference is available at
 [r.uby.dev/api-docs/test-cmd.rb](https://r.uby.dev/api-docs/test-cmd.rb)
 
-## Sources
-
-* [github.com/@0x1eef](https://github.com/0x1eef/test-cmd.rb#readme)
-* [gitlab.com/@0x1eef](https://gitlab.com/0x1eef/test-cmd.rb#about)
-
 ## License
 
 This software is released under the terms of the BSD Zero Clause license. <br>
