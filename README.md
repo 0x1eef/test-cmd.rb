@@ -37,7 +37,9 @@ which takes the name or path of a command, and given additional
 arguments with
 [`Test::Command#argv`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#argv-instance_method).
 Environment variables can be set for the spawned process with
-[`Test::Command#env`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#env-instance_method).
+[`Test::Command#env`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#env-instance_method),
+and standard input with
+[`Test::Command#stdin`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#stdin-instance_method).
 The instance has access to the command's process ID, exit status,
 standard output stream, and standard error stream.
 
@@ -45,6 +47,7 @@ standard output stream, and standard error stream.
 require "test-cmd"
 puts Test::Command.new("ls").argv("-l").stdout
 puts Test::Command.new("env").env("FOO" => "bar").stdout
+test_cmd = Test::Command.new("tr", "a-z", "A-Z").stdin("hello").stdout  # => "HELLO"
 ```
 
 <details>
@@ -62,6 +65,27 @@ puts Test::Command
   .new("ruby", "-e", "puts ENV['FOO']")
   .env("FOO" => "42")
   .stdout  # => "42\n"
+```
+</details>
+
+<details>
+<summary>Standard input</summary>
+<br>
+
+Standard input for the spawned process is set with
+[`Test::Command#stdin`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#stdin-instance_method).
+Pass a String to write it to the child's standard input, or another
+[Test::Command](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html)
+whose standard output will be used as the standard input.
+
+```ruby
+require "test-cmd"
+puts Test::Command.new("cat").stdin("hello world").stdout  # => "hello world"
+
+# Pipe one command's standard output into another's standard input
+puts Test::Command.new("tr", "a-z", "A-Z")
+  .stdin(Test::Command.new("echo", "hello"))
+  .stdout  # => "HELLO\n"
 ```
 </details>
 

@@ -51,25 +51,35 @@ class Test::Command
   end
 
   ##
+  # Presets the standard input that will be sent to the
+  # spawned process. Pass a String, or another
+  # {Test::Command Test::Command} whose standard output
+  # will be used as the standard input.
+  # @param [String, Test::Command] data
+  #  The standard input of the spawned process
+  # @example
+  #   cmd = Test::Command.new("cat").stdin("hello world")
+  #   puts cmd.stdout
+  # @return [Test::Command]
+  def stdin(data)
+    tap { @stdin = data }
+  end
+
+  ##
   # Spawns a command
   # @return [Test::Command]
   def spawn
     return self if @spawned
+    @in_r = input_pipe
     tap do
       @spawned = true
       @out, @err = Pipe.pair, Pipe.pair
-      ##
-      # Spawn in the calling thread so the command's fds are
-      # wired up before the reader thread starts. We then close
-      # our own copies of the write ends so the reader thread
-      # observes EOF the moment the child exits, and reads both
-      # streams with whole-buffer reads rather than a byte at
-      # a time.
       @pid = Process.spawn(
         @env,
         @cmd, *@argv,
-        {out: @out.w, err: @err.w, in: IO::NULL}
+        {in: @in_r, out: @out.w, err: @err.w}
       )
+      @in_r.close unless @in_r.equal?(IO::NULL)
       @out.w.close
       @err.w.close
       @producer = Thread.new do
@@ -86,8 +96,9 @@ class Test::Command
     @stderr = ex.message
     @enoent = true
     ##
-    # Capture a real non-zero status so predicates like
-    # #success? work even though the command never spawned.
+    # Close the read end of any input pipe so a pending
+    # writer thread does not block forever.
+    @in_r.close unless @in_r.equal?(IO::NULL)
     @status = Process.waitpid2(Process.spawn("false")).last
   end
 
@@ -218,6 +229,23 @@ class Test::Command
   # @endgroup
 
   private
+
+  ##
+  # Returns a pipe pair used for the command's
+  # standard input. When no input is set, the child
+  # reads from IO::NULL. When the input is another
+  # command, the source command is spawned first and
+  # its stdout feeds the pipe.
+  # @return [IO]
+  #  A read end (IO::NULL or a pipe read end)
+  def input_pipe
+    return IO::NULL if @stdin.nil?
+    data = self.class === @stdin ? @stdin.stdout : @stdin.to_s
+    r, w = IO.pipe
+    w.write(data)
+    w.close
+    r
+  end
 
   ##
   # Blocks until the spawned command has finished, its

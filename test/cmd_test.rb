@@ -33,6 +33,24 @@ class Test::Command
   end
 
   ##
+  # Test::Command#stdin
+  class StdinTest < Test
+    def test_ruby_stdin_string
+      assert_equal "hello world",
+                   ::Test::Command.new("cat")
+                     .stdin("hello world")
+                     .stdout
+    end
+
+    def test_ruby_stdin_command
+      assert_equal "42\n",
+                   ::Test::Command.new("cat")
+                     .stdin(ruby("puts 42"))
+                     .stdout
+    end
+  end
+
+  ##
   # Test::Command#{exit_status, status, success?}
   class ExitStatusTest < Test
     def test_ruby_exit_status_success
