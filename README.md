@@ -80,10 +80,14 @@ whose standard output will be used as the standard input.
 
 ```ruby
 require "test-cmd"
-puts Test::Command.new("cat").stdin("hello world").stdout  # => "hello world"
 
-# Pipe one command's standard output into another's standard input
-puts Test::Command.new("tr", "a-z", "A-Z")
+puts Test::Command
+  .new("cat")
+  .stdin("hello world")
+  .stdout  # => "hello world"
+
+puts Test::Command
+  .new("tr", "a-z", "A-Z")
   .stdin(Test::Command.new("echo", "hello"))
   .stdout  # => "HELLO\n"
 ```
