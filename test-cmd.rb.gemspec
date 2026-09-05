@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require File.join(__dir__, "lib", "test", "cmd", "version.rb")
+
 Gem::Specification.new do |gem|
   gem.name = "test-cmd.rb"
   gem.authors = ["robert"]
   gem.email = ["robert@r.uby.dev"]
   gem.homepage = "https://github.com/0x1eef/test-cmd.rb#readme"
-  gem.version = "2.2.0"
+  gem.version = Test::Command::Version
   gem.required_ruby_version = ">= 3.0"
   gem.licenses = ["0BSD"]
   gem.files = `git ls-files`.split($/)
