@@ -63,7 +63,7 @@ p Test::Command
 
 ##
 # Limit how much data is read from stdout and
-# stderr. At most 20k chars is read from both:
+# stderr. At most 20k bytes is read from both:
 p Test::Command
   .new("git")
   .limit(stdout: 20_000, stderr: 20_000)
