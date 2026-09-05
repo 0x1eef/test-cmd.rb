@@ -10,7 +10,7 @@
   </a>
 </p>
 
-> A [r.uby.dev](https://r.uby.dev) project.
+> [r.uby.dev](https://r.uby.dev) project.
 
 Welcome to the canonical test-cmd.rb repository.
 
@@ -21,6 +21,8 @@ different command attributes. The environment the command executes
 with can be set, its standard input stream can be written to, and
 the standard output and standard error streams are captured so the
 parent process can read them.
+
+It has zero runtime dependencies (stdlib-only).
 
 ## Install
 
@@ -148,5 +150,5 @@ end
 
 ## License
 
-This software is released under the terms of the BSD Zero Clause license. <br>
-See [LICENSE](./LICENSE) for details.
+This software is released under the MIT license. <br>
+See [LICENSE](LICENSE) for details.
