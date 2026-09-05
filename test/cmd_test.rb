@@ -59,6 +59,43 @@ class Test::Command
   end
 
   ##
+  # Test::Command#limit
+  class LimitTest < Test
+    def test_ruby_limit_stdout
+      assert_equal "happy",
+                   ::Test::Command.new("printf", "%s", "happy days")
+                     .limit(stdout: 5)
+                     .stdout
+    end
+
+    def test_ruby_limit_stderr
+      assert_equal "smile",
+                   ::Test::Command.new("sh", "-c", "echo smile >&2")
+                     .limit(stderr: 5)
+                     .stderr
+    end
+
+    def test_ruby_limit_nil_is_unlimited
+      expect = "a" * 20_000
+      assert_equal expect,
+                   ::Test::Command.new("ruby", "-e", "print 'a' * 20_000")
+                     .stdout
+    end
+
+    def test_ruby_limit_drains_remaining_output
+      cmd = ::Test::Command.new("sh", "-c", "printf 'happy days'")
+        .limit(stdout: 5)
+        .spawn
+      assert_equal true, cmd.spawned?
+      ##
+      # A full pipe would block forever: the
+      # drain lets the child finish and capture
+      # its status
+      assert_equal 0, cmd.exit_status
+    end
+  end
+
+  ##
   # Test::Command#{exit_status, status, success?}
   class ExitStatusTest < Test
     def test_ruby_exit_status_success

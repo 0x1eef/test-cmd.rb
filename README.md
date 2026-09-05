@@ -60,6 +60,15 @@ p Test::Command
   .new("tr", "a-z", "A-Z")
   .stdin("hello")
   .stdout  # => "HELLO"
+
+##
+# Limit how much data is read from stdout and
+# stderr. At most 20k chars is read from both:
+p Test::Command
+  .new("git")
+  .limit(stdout: 20_000, stderr: 20_000)
+  .argv("diff", "--cached")
+  .stdout
 ```
 
 <details>

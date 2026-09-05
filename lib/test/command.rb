@@ -34,6 +34,7 @@ class Test::Command
     @stdout = ""
     @stderr = ""
     @enoent = false
+    @limit = {stdout: nil, stderr: nil}
   end
 
   ##
@@ -68,6 +69,19 @@ class Test::Command
   end
 
   ##
+  # Limits how many bytes of each stream are captured.
+  # A stream output beyond the limit is discarded, keeping
+  # memory bounded even for a command that streams a lot.
+  # @param [Integer, nil] stdout
+  #  Max bytes of stdout to read, or nil for unlimited
+  # @param [Integer, nil] stderr
+  #  Max bytes of stderr to read, or nil for unlimited
+  # @return [Test::Command]
+  def limit(stdout: nil, stderr: nil)
+    tap { @limit = {stdout:, stderr:} }
+  end
+
+  ##
   # Spawns a command
   # @return [Test::Command]
   def spawn
@@ -85,8 +99,8 @@ class Test::Command
       @out.w.close
       @err.w.close
       @producer = Thread.new do
-        @stdout = @out.r.read
-        @stderr = @err.r.read
+        @stdout = read_limited(@out.r, @limit[:stdout])
+        @stderr = read_limited(@err.r, @limit[:stderr])
         Process.wait
         @status = $?
       ensure
@@ -231,6 +245,31 @@ class Test::Command
   # @endgroup
 
   private
+
+  ##
+  # Reads up to +max+ bytes from a stream, then drains
+  # the remainder so a child writing more than the limit
+  # does not block on a full pipe. When +max+ is nil the
+  # entire stream is read.
+  # @param [IO] io
+  # @param [Integer, nil] max
+  # @return [String]
+  def read_limited(io, max)
+    return io.read if max.nil?
+    buf = +""
+    remaining = max
+    while remaining > 0 && (chunk = io.read(remaining))
+      buf << chunk
+      remaining -= chunk.bytesize
+    end
+    ##
+    # Drain whatever is left so the child can exit:
+    # the drained bytes are discarded, keeping memory
+    # bounded.
+    while (chunk = io.read(16_384))
+    end
+    buf
+  end
 
   ##
   # Returns a pipe pair used for the command's
