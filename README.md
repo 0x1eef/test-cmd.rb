@@ -16,10 +16,11 @@ Welcome to the canonical test-cmd.rb repository.
 
 test-cmd.rb is a Go-inspired, object-oriented interface for running
 commands on UNIX-like systems, in the spirit of Go's `os/exec`. A
-command is built up and then spawned so its standard output and
-error streams, process ID, and exit status are captured in the
-background. Predicates, callbacks, and process control cover the
-common cases with a small and dependency-free API.
+command can be built by chaining multiple method calls that impact
+different command attributes. The environment the command executes
+with can be set, its standard input stream can be written to, and
+the standard output and standard error streams are captured so the
+parent process can read them.
 
 ## Install
 
@@ -31,37 +32,42 @@ test-cmd.rb can be installed via rubygems.org:
 
 ### Commands
 
-A command is created with
-[`Test::Command#initialize`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#initialize-instance_method)
-which takes the name or path of a command, and given additional
-arguments with
-[`Test::Command#argv`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#argv-instance_method).
-Environment variables can be set for the spawned process with
-[`Test::Command#env`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#env-instance_method),
-and standard input with
-[`Test::Command#stdin`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#stdin-instance_method).
-The instance has access to the command's process ID, exit status,
-standard output stream, and standard error stream.
 
 ```ruby
 require "test-cmd"
-puts Test::Command.new("ls").argv("-l").stdout
-puts Test::Command.new("env").env("FOO" => "bar").stdout
-test_cmd = Test::Command.new("tr", "a-z", "A-Z").stdin("hello").stdout  # => "HELLO"
+
+##
+# Call the 'ls' command
+p Test::Command
+  .new("ls")
+  .argv("-l")
+  .stdout
+
+##
+# Call the env command with the given environment
+# variables set.
+p Test::Command
+  .new("env")
+  .env("FOO" => "bar")
+  .stdout
+
+##
+# Write to the stdin stream of the command that
+# is executed.
+p Test::Command
+  .new("tr", "a-z", "A-Z")
+  .stdin("hello")
+  .stdout  # => "HELLO"
 ```
 
 <details>
 <summary>Environment</summary>
 <br>
 
-Environment variables for the spawned process are set with
-[`Test::Command#env`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#env-instance_method),
-which merges the given variables into the child's environment and
-returns the command for chaining.
-
 ```ruby
 require "test-cmd"
-puts Test::Command
+
+p Test::Command
   .new("ruby", "-e", "puts ENV['FOO']")
   .env("FOO" => "42")
   .stdout  # => "42\n"
@@ -72,21 +78,15 @@ puts Test::Command
 <summary>Standard input</summary>
 <br>
 
-Standard input for the spawned process is set with
-[`Test::Command#stdin`](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html#stdin-instance_method).
-Pass a String to write it to the child's standard input, or another
-[Test::Command](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html)
-whose standard output will be used as the standard input.
-
 ```ruby
 require "test-cmd"
 
-puts Test::Command
+p Test::Command
   .new("cat")
   .stdin("hello world")
   .stdout  # => "hello world"
 
-puts Test::Command
+p Test::Command
   .new("tr", "a-z", "A-Z")
   .stdin(Test::Command.new("echo", "hello"))
   .stdout  # => "HELLO\n"
@@ -96,13 +96,6 @@ puts Test::Command
 <details>
 <summary>Callbacks</summary>
 <br>
-
-The success and failure callbacks provide hooks for when
-a command exits successfully or unsuccessfully. The callbacks
-are passed an instance of
-[Test::Command](https://r.uby.dev/api-docs/test-cmd.rb/Test/Command.html)
-that has access to the command's process ID, exit status,
-standard output stream, and standard error stream.
 
 ```ruby
 require "test-cmd"
@@ -152,11 +145,6 @@ class CmdTest < Test::Unit::TestCase
 end
 ```
 </details>
-
-## Documentation
-
-A complete API reference is available at
-[r.uby.dev/api-docs/test-cmd.rb](https://r.uby.dev/api-docs/test-cmd.rb)
 
 ## License
 
