@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.join(__dir__, "lib", "test", "cmd", "version.rb")
+require File.join(__dir__, "lib", "test", "command", "version.rb")
 
 Gem::Specification.new do |gem|
   gem.name = "test-cmd.rb"

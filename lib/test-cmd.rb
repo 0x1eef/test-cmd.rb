@@ -1,1 +1,1 @@
-require_relative "test/cmd"
+require_relative "test/command"

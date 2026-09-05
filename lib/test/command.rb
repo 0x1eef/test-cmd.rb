@@ -5,6 +5,8 @@ end unless defined?(Test)
 # test-cmd.rb provides an object oriented interface
 # for spawning a command
 class Test::Command
+  require_relative "command/version"
+
   ##
   # @api private
   class Pipe < Struct.new(:r, :w)
