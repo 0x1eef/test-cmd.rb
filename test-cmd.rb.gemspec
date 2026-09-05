@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
   gem.authors = ["robert"]
   gem.email = ["robert@r.uby.dev"]
   gem.homepage = "https://github.com/0x1eef/test-cmd.rb#readme"
-  gem.version = Test::Command::Version
+  gem.version = Test::Command::VERSION
   gem.required_ruby_version = ">= 3.0"
   gem.licenses = ["0BSD"]
   gem.files = `git ls-files`.split($/)

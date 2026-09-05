@@ -125,7 +125,7 @@ stream of the spawned ruby process:
 
 ```ruby
 require "test/unit"
-require "test/cmd"
+require "test-cmd"
 
 class CmdTest < Test::Unit::TestCase
   def test_ruby_stdout
