@@ -19,6 +19,14 @@ class Test::Command
                              .argv("-e", "warn 42")
                              .stderr
     end
+
+    def test_ruby_argv_to_s
+      arg = Object.new
+      def arg.to_s = "-e"
+      assert_equal "42\n", ::Test::Command.new("ruby")
+                             .argv(arg, "warn 42")
+                             .stderr
+    end
   end
 
   ##

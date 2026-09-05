@@ -76,7 +76,7 @@ class Test::Command
       @out, @err = Pipe.pair, Pipe.pair
       @pid = Process.spawn(
         @env,
-        @cmd, *@argv,
+        @cmd, *@argv.map(&:to_s),
         {in: @in_r, out: @out.w, err: @err.w}
       )
       @in_r.close unless @in_r.equal?(IO::NULL)
